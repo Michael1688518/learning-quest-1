@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b67f1">
+<title>Learning Quest · 全科学习大冒险</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--accent:#5b67f1;--accent2:#8a5cf5;--ok:#16a36a;--bad:#d92d20;--line:#dce1ed;--shadow:0 12px 35px #17203314}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#eef2ff,var(--bg) 300px);color:var(--ink)}
+button{font:inherit}.wrap{max-width:1050px;margin:auto;padding:24px 18px 70px}header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}
+.brand h1{margin:0;font-size:clamp(28px,5vw,44px)}.brand p{margin:7px 0;color:var(--muted)}.stats{display:flex;gap:8px;flex-wrap:wrap}.badge{background:#fff;padding:10px 14px;border-radius:16px;box-shadow:var(--shadow);white-space:nowrap}
+.profilebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.profile{border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 15px;cursor:pointer;box-shadow:var(--shadow);font-weight:700}.profile.active{background:#172033;color:#fff;border-color:#172033}
+.current{margin:0 0 10px;color:var(--muted);font-size:14px}
+.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:28px;padding:25px;box-shadow:var(--shadow)}.hero h2{margin:0 0 7px}.progress{height:13px;background:#ffffff3a;border-radius:99px;overflow:hidden;margin-top:16px}.progress i{display:block;height:100%;background:#fff;border-radius:99px;transition:.3s}
+.section-title{margin:28px 2px 13px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:0;text-align:left;background:var(--card);border-radius:22px;padding:19px;box-shadow:var(--shadow);cursor:pointer;min-height:142px;color:inherit;transition:.15s}.card:hover{transform:translateY(-2px)}.icon{font-size:34px}.card h3{margin:9px 0 4px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+.panel{display:none;margin-top:20px;background:#fff;border-radius:25px;padding:22px;box-shadow:var(--shadow)}.panel.show{display:block}.panelTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel h2{margin:0 0 5px}
+.levels,.units{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.pill{border:1px solid var(--line);background:#fafbff;border-radius:14px;padding:9px 13px;cursor:pointer}.pill.active{background:#172033;color:#fff;border-color:#172033}.units .pill.active{background:var(--accent);border-color:var(--accent)}
+.questMeta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:18px}.miniProgress{height:9px;background:#e8ebf3;border-radius:99px;overflow:hidden;flex:1}.miniProgress i{display:block;height:100%;background:var(--accent);transition:.3s}
+.challenge{margin-top:12px;padding:20px;border-radius:20px;background:#f7f8fc}.qnum{color:var(--muted);font-size:14px}.question{font-size:19px;line-height:1.6;margin:10px 0 15px;font-weight:650}.choices{display:grid;gap:9px}.choice{padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;cursor:pointer;font-size:16px}.choice.good{border-color:var(--ok);background:#eafaf3}.choice.bad{border-color:#f0aaa5;background:#fff0ef}.feedback{min-height:28px;margin:13px 0 0;font-weight:650}.feedback.ok{color:var(--ok)}.feedback.no{color:var(--bad)}
+.actions{display:flex;gap:9px;margin-top:10px}.next,.reset{border:0;border-radius:14px;padding:11px 16px;cursor:pointer}.next{background:var(--accent);color:#fff;display:none}.reset{background:#eceff6;color:var(--ink)}
+.langbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.langbtn{border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:12px;padding:8px 11px;cursor:pointer}.langbtn.active{background:#fff;color:#4f46e5}.tri{display:grid;gap:4px}.tri small{display:block;color:var(--muted);font-weight:500}.tri .primary{font-weight:700;color:var(--ink)}.footer{text-align:center;color:var(--muted);margin-top:32px;font-size:13px}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start;flex-direction:column}}@media(max-width:440px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 55px}}
+</style></head>
+<body><main class="wrap">
+<header><div class="brand"><h1>🚀 Learning Quest</h1><p>小学全科学习大冒险 · 学一点，闯一关</p></div><div class="stats"><div class="badge">⭐ <b id="stars">0</b> 星</div><div class="badge">🔥 <b id="clears">0</b> 次通关</div></div></header>
+<div class="current">学生 / Student / Schüler：<b id="learnerName">Harry</b></div>
+
+<section class="hero"><h2 id="welcome">Harry，今天继续升级吧！</h2><div id="heroText">选择一个科目和等级，开始 10 题闯关。</div><div class="langbar"><button class="langbtn active" data-lang="tri">CN / EN / DE 三语</button><button class="langbtn" data-lang="zh">CN 中文</button><button class="langbtn" data-lang="en">EN English</button><button class="langbtn" data-lang="de">DE Deutsch</button></div><div class="progress"><i id="bar"></i></div></section>
+<h2 class="section-title">选择科目</h2><section class="grid" id="subjects"></section>
+<section class="panel" id="panel"><div class="panelTop"><div><h2 id="subjectTitle"></h2><div id="subjectDesc"></div></div><button class="reset" id="restart">重新开始本关</button></div>
+<div class="levels" id="levels"></div><div class="units" id="units"></div>
+<div class="questMeta"><span id="scoreText">得分 0</span><div class="miniProgress"><i id="qbar"></i></div><span id="countText">1 / 10</span></div>
+<div class="challenge" id="challenge"></div></section>
+<div class="footer">Learning Quest · Harry 专属学习档案 · CN / EN / DE</div>
+</main>
+<script>
+const LEARNERS=[["Harry","👦"]];
+let learner="Harry";
+let langMode=localStorage.getItem("lq-lang")||"tri";
+const key=(name)=>`lq-v13-${learner}-${name}`;
+const getNum=n=>+localStorage.getItem(key(n))||0;
+const setNum=(n,v)=>localStorage.setItem(key(n),v);
+let stars=getNum("stars"),clears=getNum("clears");
+
+const SUBJECTS={
+"语文":{icon:"📚",en:"Chinese",de:"Chinesisch",desc:"G1–G6 · 识字、词语、阅读与表达",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","识字词语","阅读理解"]},
+"数学":{icon:"🧮",en:"Mathematics",de:"Mathematik",desc:"G1–G6 · 基础数学、奥数、等量代换、单位换算",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","基础数学","奥数","单位换算"]},
+"英语":{icon:"🌎",en:"English",de:"Englisch",desc:"G1–G6 · Vocabulary、Grammar、Reading",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","Vocabulary","Grammar"]},
+"德语":{icon:"🇩🇪",en:"German",de:"Deutsch",desc:"A1–A2 · Wortschatz、Lesen、Grammatik",levels:["A1.1","A1.2","A2.1","A2.2"],units:["综合","Wortschatz","Grammatik"]},
+"科学":{icon:"🔬",en:"Science",de:"Naturwissenschaften",desc:"G1–G6 · 生命、物质、地球与宇宙",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","生命科学","地球与物质"]},
+"综合挑战":{icon:"🏆",en:"Mixed Challenge",de:"Fächerübergreifende Aufgabe",desc:"跨学科任务 · 训练推理和解决问题能力",levels:["G1","G2","G3","G4","G5","G6"],units:["综合挑战"]}
+};
+const UI={"综合":["Mixed","Gemischt"],"识字词语":["Characters & Words","Schriftzeichen & Wörter"],"阅读理解":["Reading","Leseverständnis"],"基础数学":["Core Math","Grundmathematik"],"奥数":["Math Challenge","Mathe-Knobelei"],"单位换算":["Unit Conversion","Einheiten umrechnen"],"生命科学":["Life Science","Biowissenschaften"],"地球与物质":["Earth & Matter","Erde & Materie"],"综合挑战":["Mixed Challenge","Fächerübergreifende Aufgabe"],"Vocabulary":["Vocabulary","Wortschatz"],"Grammar":["Grammar","Grammatik"],"Wortschatz":["Vocabulary","Wortschatz"],"Grammatik":["Grammar","Grammatik"]};
+const esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function tri(cn,en,de){if(langMode==="zh")return esc(cn);if(langMode==="en")return esc(en);if(langMode==="de")return esc(de);return `<div class="tri"><span class="primary">CN: ${esc(cn)}</span><small>EN: ${esc(en)}</small><small>DE: ${esc(de)}</small></div>`}
+function ui(x){let t=UI[x]||[x,x];return tri(x,t[0],t[1])}
+function shuffle(a){for(let i=a.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+let state={subject:"数学",level:"G3",unit:"综合",index:0,score:0,answered:false,questions:[]};
+function renderProfiles(){}
+function switchLearner(n){}
+function renderSubjects(){let b=document.querySelector("#subjects");b.innerHTML="";Object.entries(SUBJECTS).forEach(([n,s])=>{let x=document.createElement("button");x.className="card";x.innerHTML=`<div class="icon">${s.icon}</div><h3>${tri(n,s.en,s.de)}</h3><p>${esc(s.desc)}</p>`;x.onclick=()=>selectSubject(n);b.appendChild(x)})}
+function selectSubject(n){state.subject=n;let s=SUBJECTS[n];state.level=s.levels[Math.min(2,s.levels.length-1)];state.unit=s.units[0];document.querySelector("#panel").classList.add("show");document.querySelector("#subjectTitle").innerHTML=s.icon+" "+tri(n,s.en,s.de);document.querySelector("#subjectDesc").textContent=s.desc;renderLevels();renderUnits();startQuest()}
+function renderLevels(){let b=document.querySelector("#levels");b.innerHTML="";SUBJECTS[state.subject].levels.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.level?" active":"");x.textContent=n;x.onclick=()=>{state.level=n;renderLevels();startQuest()};b.appendChild(x)})}
+function renderUnits(){let b=document.querySelector("#units");b.innerHTML="";SUBJECTS[state.subject].units.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.unit?" active":"");x.innerHTML=ui(n);x.onclick=()=>{state.unit=n;renderUnits();startQuest()};b.appendChild(x)})}
+function makeQ(i){
+ let g=state.level.startsWith("G")?+state.level.slice(1):1,a,b,ans,cn,en,de,opts;
+ if(state.subject==="数学"){
+   if(state.unit==="单位换算"){a=1+i%7;ans=a*100;cn=`${a} 米等于多少厘米？`;en=`How many centimeters are ${a} meters?`;de=`Wie viele Zentimeter sind ${a} Meter?`;opts=[ans,ans/10,ans*10]}
+   else if(state.unit==="奥数"){a=4+i%5;ans=a*6+5;cn=`有 ${a} 个盒子，每盒 6 支笔，再增加 5 支，一共有多少支？`;en=`There are ${a} boxes with 6 pencils in each box. 5 more pencils are added. How many pencils are there altogether?`;de=`Es gibt ${a} Schachteln mit jeweils 6 Stiften. 5 weitere Stifte kommen hinzu. Wie viele Stifte sind es insgesamt?`;opts=[ans,a*6,ans+6]}
+   else{a=(g*3)+i+2;b=2+(i%7);ans=g<=2?a+b:g===3?a*b:g===4?a-b:a*b+5;cn=g<=2?`${a} + ${b} = ?`:g===3?`${a} × ${b} = ?`:g===4?`${a} - ${b} = ?`:`${a} × ${b} + 5 = ?`;en=de=cn;opts=[ans,ans+2,Math.max(0,ans-3)]}
+ }else if(state.subject==="英语"){let qs=[["Choose the animal.",["cat","book","red"],"cat"],['Complete: "I ___ happy."',["am","is","are"],"am"],["Which word is a color?",["blue","dog","run"],"blue"]],q=qs[i%3];cn="英语练习："+q[0];en=q[0];de="Englischübung: "+q[0];opts=q[1];ans=q[2]}
+ else if(state.subject==="德语"){let qs=[["Wie heißt du?",["Ich heiße Harry.","Ich bin acht Uhr.","Guten Appetit."],"Ich heiße Harry."],["Ich ___ acht Jahre alt.",["bin","bist","ist"],"bin"]],q=qs[i%2];cn="德语练习："+q[0];en="German exercise: "+q[0];de=q[0];opts=q[1];ans=q[2]}
+ else if(state.subject==="科学"){let qs=[["植物通常需要什么才能生长？","What do plants usually need to grow?","Was brauchen Pflanzen normalerweise zum Wachsen?",["水和阳光","塑料","石头"],"水和阳光"],["水从液态变成水蒸气叫做什么？","What is the change from liquid water to water vapor called?","Wie nennt man den Übergang von flüssigem Wasser zu Wasserdampf?",["蒸发","凝固","融化"],"蒸发"]],q=qs[i%2];[cn,en,de,opts,ans]=q}
+ else if(state.subject==="语文"){let qs=[["“高兴”的近义词更接近哪一个？","Which word is closest in meaning to the Chinese word 高兴?","Welches Wort kommt der Bedeutung des chinesischen Wortes 高兴 am nächsten?",["开心","生气","害怕"],"开心"],["“因为下雨，所以比赛取消。”原因是什么？","In the sentence, what is the reason the match was cancelled?","Was ist in diesem Satz der Grund für die Absage des Spiels?",["下雨","比赛","取消"],"下雨"]],q=qs[i%2];[cn,en,de,opts,ans]=q}
+ else{cn="做科学观察时，哪种做法更可靠？";en="Which method is more reliable when making a scientific observation?";de="Welche Methode ist bei einer wissenschaftlichen Beobachtung zuverlässiger?";opts=["记录看到的事实","只写希望发生的结果","不做记录"];ans=opts[0]}
+ return {cn,en,de,opts:shuffle([...opts].map(String)),ans:String(ans)}
+}
+function startQuest(){state.index=0;state.score=0;state.answered=false;state.questions=Array.from({length:10},(_,i)=>makeQ(i));renderQ()}
+function renderQ(){let q=state.questions[state.index],c=document.querySelector("#challenge");c.innerHTML=`<div class="qnum">${esc(state.subject)} · ${esc(state.level)} · ${esc(state.unit)}</div><div class="question">${tri(q.cn,q.en,q.de)}</div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><div class="actions"><button class="next" id="next">下一题 →</button></div>`;q.opts.forEach(o=>{let b=document.createElement("button");b.className="choice";b.textContent=o;b.onclick=()=>answer(b,o,q);document.querySelector("#choices").appendChild(b)});document.querySelector("#next").onclick=nextQ;updateMeta()}
+function answer(btn,o,q){if(state.answered)return;if(String(o)===q.ans){state.answered=true;state.score++;stars++;setNum("stars",stars);document.querySelector("#stars").textContent=stars;btn.classList.add("good");[...document.querySelector("#choices").children].forEach(x=>x.disabled=true);let f=document.querySelector("#feedback");f.textContent="✅ 正确！+1 ⭐";f.className="feedback ok";document.querySelector("#next").style.display="inline-block";updateMeta()}else{btn.classList.add("bad");btn.disabled=true;let f=document.querySelector("#feedback");f.textContent="再想一想。";f.className="feedback no"}}
+function nextQ(){if(!state.answered)return;state.index++;if(state.index>=10)finish();else{state.answered=false;renderQ()}}
+function finish(){clears++;setNum("clears",clears);document.querySelector("#clears").textContent=clears;let pct=state.score*10;document.querySelector("#challenge").innerHTML=`<div style="text-align:center;padding:24px"><div style="font-size:48px">${pct>=80?"🏆":"🌟"}</div><h3>${learner} 本关完成！</h3><p><b>${state.score} / 10</b> 正确 · 正确率 ${pct}%</p><button class="next" style="display:inline-block" onclick="startQuest()">再挑战一次</button></div>`;document.querySelector("#heroText").textContent=`${learner} 刚完成 ${state.subject} ${state.level}，正确率 ${pct}%。`}
+function updateMeta(){let done=state.index+(state.answered?1:0);document.querySelector("#countText").textContent=`${Math.min(state.index+1,10)} / 10`;document.querySelector("#scoreText").textContent=`得分 ${state.score}`;document.querySelector("#qbar").style.width=(done/10*100)+"%";document.querySelector("#bar").style.width=Math.min(100,10+stars%91)+"%"}
+document.querySelector("#restart").onclick=startQuest;
+document.querySelectorAll(".langbtn").forEach(b=>b.onclick=()=>{langMode=b.dataset.lang;localStorage.setItem("lq-lang",langMode);document.querySelectorAll(".langbtn").forEach(x=>x.classList.toggle("active",x.dataset.lang===langMode));renderSubjects();renderUnits();renderQ()});
+document.querySelector("#stars").textContent=stars;document.querySelector("#clears").textContent=clears;document.querySelector("#learnerName").textContent=learner;document.querySelector("#welcome").textContent=`${learner}，今天继续升级吧！`;renderProfiles();renderSubjects();selectSubject("数学");
+</script></body></html>
