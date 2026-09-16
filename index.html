@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Learning Quest · 全科学习大冒险</title>
+
+<style>
+:root{
+  --bg:#f5f7fb;
+  --card:#fff;
+  --ink:#172033;
+  --muted:#667085;
+  --accent:#5b67f1;
+  --ok:#16a36a;
+  --shadow:0 12px 35px #17203314;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:linear-gradient(180deg,#eef2ff,var(--bg) 280px);
+  color:var(--ink);
+}
+
+.wrap{
+  max-width:980px;
+  margin:auto;
+  padding:24px 18px 60px;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+  margin:8px 0 24px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:clamp(27px,5vw,44px);
+}
+
+.brand p{
+  margin:8px 0;
+  color:var(--muted);
+}
+
+.badge{
+  background:#fff;
+  padding:10px 14px;
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  white-space:nowrap;
+}
+
+.hero{
+  background:linear-gradient(135deg,#5b67f1,#8a5cf5);
+  color:#fff;
+  border-radius:28px;
+  padding:26px;
+  box-shadow:var(--shadow);
+}
+
+.hero h2{margin:0 0 8px}
+
+.progress{
+  height:13px;
+  background:#ffffff3a;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:18px;
+}
+
+.progress i{
+  display:block;
+  width:12%;
+  height:100%;
+  background:#fff;
+  border-radius:99px;
+}
+
+.section-title{
+  margin:30px 2px 14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.card{
+  border:0;
+  text-align:left;
+  background:var(--card);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:.18s;
+  min-height:148px;
+  color:inherit;
+}
+
+.card:active{
+  transform:scale(.98);
+}
+
+.icon{
+  font-size:34px;
+}
+
+.card h3{
+  margin:10px 0 4px;
+}
+
+.card p{
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.panel{
+  display:none;
+  margin-top:20px;
+  background:#fff;
+  border-radius:24px;
+  padding:22px;
+  box-shadow:var(--shadow);
+}
+
+.panel.show{
+  display:block;
+}
+
+.levels{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:15px 0;
+}
+
+.level{
+  border:1px solid #d9def0;
+  background:#fafbff;
+  border-radius:14px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+
+.level.active{
+  background:#172033;
+  color:#fff;
+}
+
+.challenge{
+  margin-top:15px;
+  padding:18px;
+  border-radius:18px;
+  background:#f7f8fc;
+}
+
+.choices{
+  display:grid;
+  gap:9px;
+  margin-top:14px;
+}
+
+.choice{
+  padding:13px;
+  border:1px solid #dce1ed;
+  border-radius:14px;
+  background:#fff;
+  text-align:left;
+  font-size:16px;
+}
+
+.choice.good{
+  border-color:var(--ok);
+  background:#eafaf3;
+}
+
+.footer{
+  text-align:center;
+  color:var(--muted);
+  margin-top:34px;
+  font-size:13px;
+}
+
+@media(max-width:680px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+@media(max-width:420px){
+  .grid{grid-template-columns:1fr}
+  .card{min-height:125px}
+}
+</style>
+</head>
+
+<body>
+
+<main class="wrap">
+
+<header>
+  <div class="brand">
+    <h1>🚀 Learning Quest</h1>
+    <p>小学全科学习大冒险 · 学一点，闯一关</p >
+  </div>
+
+  <div class="badge">
+    ⭐ <b id="stars">0</b> 星
+  </div>
+</header>
+
+<section class="hero">
+  <h2>今天继续升级吧！</h2>
+  <div>完成挑战获得星星，连续学习解锁新的关卡。</div>
+
+  <div class="progress">
+    <i id="bar"></i>
+  </div>
+</section>
+
+<h2 class="section-title">选择科目</h2>
+
+<section class="grid" id="subjects"></section>
+
+<section class="panel" id="panel">
+
+  <h2 id="subjectTitle"></h2>
+
+  <div id="subjectDesc"></div>
+
+  <div class="levels" id="levels"></div>
+
+  <div class="challenge">
+
+    <b>今日挑战</b>
+
+    <p id="question"></p >
+
+    <div class="choices" id="choices"></div>
+
+    <p id="result"></p >
+
+  </div>
+
+</section>
+
+<div class="footer">
+Learning Quest v0.1 · 学习进度保存在本设备
+</div>
+
+</main>
+
+<script>
+
+const subjects = [
+
+["语文","📚","G1–G6 · 识字、阅读、表达"],
+
+["数学","🧮","G1–G6 · 基础数学、奥数、等量代换、单位换算"],
+
+["英语","🌎","G1–G6 · 阅读、词汇、理解与表达"],
+
+["德语","🇩🇪","A1–A2 · Wortschatz、Lesen、Grammatik"],
+
+["科学","🔬","G1–G6 · 生命、物质、地球与宇宙"],
+
+["综合挑战","🏆","跨学科任务 · 训练解决问题能力"]
+
+];
+
+
+const bank = {
+
+"语文":[
+"“春风又绿江南岸”中，哪个字最能表现春天的变化？",
+["绿","又","岸"],
+"绿"
+],
+
+"数学":[
+"3盒彩笔一共有24支，每盒彩笔一样多。每盒有多少支？",
+["6","8","12"],
+"8"
+],
+
+"英语":[
+'Choose the best word: “The bird ___ in the sky.”',
+["flies","reads","drinks"],
+"flies"
+],
+
+"德语":[
+'Welche Antwort passt? “Wie heißt du?”',
+["Ich heiße Kevin.","Ich bin acht Uhr.","Danke gut."],
+"Ich heiße Kevin."
+],
+
+"科学":[
+"植物制造养分时最重要的能量来源是什么？",
+["阳光","月光","土壤颜色"],
+"阳光"
+],
+
+"综合挑战":[
+"一辆车每小时行60 km，30分钟能行多少 km？",
+["20 km","30 km","60 km"],
+"30 km"
+]
+
+};
+
+
+let stars =
++localStorage.getItem("lq-stars") || 0;
+
+
+document.querySelector("#stars").textContent = stars;
+
+document.querySelector("#bar").style.width =
+Math.min(100,12 + stars*4) + "%";
+
+
+const grid =
+document.querySelector("#subjects");
+
+
+subjects.forEach(s=>{
+
+let b =
+document.createElement("button");
+
+b.className = "card";
+
+b.innerHTML =
+
+`<div class="icon">${s[1]}</div>
+<h3>${s[0]}</h3>
+<p>${s[2]}</p >`;
+
+b.onclick = ()=> openSubject(s);
+
+grid.appendChild(b);
+
+});
+
+
+function openSubject(s){
+
+document.querySelector("#panel")
+.classList.add("show");
+
+document.querySelector("#subjectTitle")
+.textContent = s[1] + " " + s[0];
+
+document.querySelector("#subjectDesc")
+.textContent = s[2];
+
+
+let lv =
+document.querySelector("#levels");
+
+lv.innerHTML = "";
+
+
+let names =
+
+s[0] == "德语"
+
+? ["A1.1","A1.2","A2.1","A2.2"]
+
+: ["G1","G2","G3","G4","G5","G6"];
+
+
+names.forEach((n,i)=>{
+
+let x =
+document.createElement("button");
+
+x.className =
+"level" + (i==0 ? " active" : "");
+
+x.textContent = n;
+
+x.onclick = ()=>{
+
+[...lv.children]
+.forEach(y=>
+y.classList.remove("active")
+);
+
+x.classList.add("active");
+
+};
+
+lv.appendChild(x);
+
+});
+
+
+loadQ(s[0]);
+
+
+document.querySelector("#panel")
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+
+function loadQ(name){
+
+let [q,opts,ans] =
+bank[name];
+
+document.querySelector("#question")
+.textContent = q;
+
+
+let c =
+document.querySelector("#choices");
+
+c.innerHTML = "";
+
+document.querySelector("#result")
+.textContent = "";
+
+
+opts.forEach(o=>{
+
+let b =
+document.createElement("button");
+
+b.className = "choice";
+
+b.textContent = o;
+
+
+b.onclick = ()=>{
+
+if(o === ans){
+
+b.classList.add("good");
+
+document.querySelector("#result")
+.textContent =
+"✅ 正确！获得 1 颗星";
+
+
+stars++;
+
+localStorage.setItem(
+"lq-stars",
+stars
+);
+
+document.querySelector("#stars")
+.textContent = stars;
+
+document.querySelector("#bar")
+.style.width =
+Math.min(100,12 + stars*4) + "%";
+
+
+[...c.children]
+.forEach(x=>x.disabled=true);
+
+}
+
+else{
+
+document.querySelector("#result")
+.textContent =
+"再想一想 🙂";
+
+}
+
+};
+
+
+c.appendChild(b);
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
