@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b67f1">
+<title>Learning Quest · 全科学习大冒险</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--accent:#5b67f1;--accent2:#8a5cf5;--ok:#16a36a;--bad:#d92d20;--line:#dce1ed;--shadow:0 12px 35px #17203314}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#eef2ff,var(--bg) 300px);color:var(--ink)}
+button{font:inherit}.wrap{max-width:1050px;margin:auto;padding:24px 18px 70px}header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}
+.brand h1{margin:0;font-size:clamp(28px,5vw,44px)}.brand p{margin:7px 0;color:var(--muted)}.stats{display:flex;gap:8px;flex-wrap:wrap}.badge{background:#fff;padding:10px 14px;border-radius:16px;box-shadow:var(--shadow);white-space:nowrap}
+.profilebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.profile{border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 15px;cursor:pointer;box-shadow:var(--shadow);font-weight:700}.profile.active{background:#172033;color:#fff;border-color:#172033}
+.current{margin:0 0 10px;color:var(--muted);font-size:14px}
+.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:28px;padding:25px;box-shadow:var(--shadow)}.hero h2{margin:0 0 7px}.progress{height:13px;background:#ffffff3a;border-radius:99px;overflow:hidden;margin-top:16px}.progress i{display:block;height:100%;background:#fff;border-radius:99px;transition:.3s}
+.section-title{margin:28px 2px 13px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:0;text-align:left;background:var(--card);border-radius:22px;padding:19px;box-shadow:var(--shadow);cursor:pointer;min-height:142px;color:inherit;transition:.15s}.card:hover{transform:translateY(-2px)}.icon{font-size:34px}.card h3{margin:9px 0 4px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+.panel{display:none;margin-top:20px;background:#fff;border-radius:25px;padding:22px;box-shadow:var(--shadow)}.panel.show{display:block}.panelTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel h2{margin:0 0 5px}
+.levels,.units{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.pill{border:1px solid var(--line);background:#fafbff;border-radius:14px;padding:9px 13px;cursor:pointer}.pill.active{background:#172033;color:#fff;border-color:#172033}.units .pill.active{background:var(--accent);border-color:var(--accent)}
+.questMeta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:18px}.miniProgress{height:9px;background:#e8ebf3;border-radius:99px;overflow:hidden;flex:1}.miniProgress i{display:block;height:100%;background:var(--accent);transition:.3s}
+.challenge{margin-top:12px;padding:20px;border-radius:20px;background:#f7f8fc}.qnum{color:var(--muted);font-size:14px}.question{font-size:19px;line-height:1.6;margin:10px 0 15px;font-weight:650}.choices{display:grid;gap:9px}.choice{padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;cursor:pointer;font-size:16px}.choice.good{border-color:var(--ok);background:#eafaf3}.choice.bad{border-color:#f0aaa5;background:#fff0ef}.feedback{min-height:28px;margin:13px 0 0;font-weight:650}.feedback.ok{color:var(--ok)}.feedback.no{color:var(--bad)}
+.actions{display:flex;gap:9px;margin-top:10px}.next,.reset{border:0;border-radius:14px;padding:11px 16px;cursor:pointer}.next{background:var(--accent);color:#fff;display:none}.reset{background:#eceff6;color:var(--ink)}
+.langbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.langbtn{border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:12px;padding:8px 11px;cursor:pointer}.langbtn.active{background:#fff;color:#4f46e5}.tri{display:grid;gap:4px}.tri small{display:block;color:var(--muted);font-weight:500}.tri .primary{font-weight:700;color:var(--ink)}.footer{text-align:center;color:var(--muted);margin-top:32px;font-size:13px}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start;flex-direction:column}}@media(max-width:440px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 55px}}
+
+.parentBtn{border:0;border-radius:14px;padding:10px 14px;background:#fff;color:#172033;box-shadow:var(--shadow);cursor:pointer;font-weight:700}
+.parentDash{margin-top:22px;background:#fff;border-radius:25px;padding:22px;box-shadow:var(--shadow)}
+.parentDash.hidden{display:none}.dashHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.metric{background:#f7f8fc;border-radius:16px;padding:14px}.metric b{display:block;font-size:25px;margin-top:5px}
+.subjectStats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.subjectStat{border:1px solid var(--line);border-radius:14px;padding:12px}
+.history{margin-top:16px;display:grid;gap:8px}.historyItem{border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px}
+.weak{margin-top:16px;background:#fff8e8;border-radius:16px;padding:14px}.dashNote{font-size:13px;color:var(--muted);margin-top:12px}
+@media(max-width:720px){.dashGrid{grid-template-columns:repeat(2,1fr)}.subjectStats{grid-template-columns:1fr}}
+
+</style></head>
+<body><main class="wrap">
+<header><div class="brand"><h1>🚀 Learning Quest</h1><p>小学全科学习大冒险 · 学一点，闯一关</p></div><div class="stats"><div class="badge">⭐ <b id="stars">0</b> 星</div><div class="badge">🔥 <b id="clears">0</b> 次通关</div><button class="parentBtn" id="parentBtn">👨‍👩‍👧 家长中心</button></div></header>
+<div class="current">学生 / Student / Schüler：<b id="learnerName">Harry</b></div>
+
+<section class="hero"><h2 id="welcome">Harry，今天继续升级吧！</h2><div id="heroText">选择一个科目和等级，开始 10 题闯关。</div><div class="langbar"><button class="langbtn active" data-lang="tri">CN / EN / DE 三语</button><button class="langbtn" data-lang="zh">CN 中文</button><button class="langbtn" data-lang="en">EN English</button><button class="langbtn" data-lang="de">DE Deutsch</button></div><div class="progress"><i id="bar"></i></div></section>
+<h2 class="section-title">选择科目</h2><section class="grid" id="subjects"></section>
+<section class="panel" id="panel"><div class="panelTop"><div><h2 id="subjectTitle"></h2><div id="subjectDesc"></div></div><button class="reset" id="restart">重新开始本关</button></div>
+<div class="levels" id="levels"></div><div class="units" id="units"></div>
+<div class="questMeta"><span id="scoreText">得分 0</span><div class="miniProgress"><i id="qbar"></i></div><span id="countText">1 / 10</span></div>
+<div class="challenge" id="challenge"></div></section>
+
+<section class="parentDash hidden" id="parentDash">
+ <div class="dashHead"><div><h2 style="margin:0">👨‍👩‍👧 家长中心 · Parent Dashboard</h2><div class="current">学习数据仅保存在当前设备浏览器</div></div><button class="reset" id="closeDash">关闭</button></div>
+ <div id="dashLearners" class="profilebar"></div>
+ <div class="dashGrid">
+  <div class="metric">累计答题<b id="dTotal">0</b></div>
+  <div class="metric">正确率<b id="dAccuracy">0%</b></div>
+  <div class="metric">累计错题<b id="dWrong">0</b></div>
+  <div class="metric">完成闯关<b id="dSessions">0</b></div>
+ </div>
+ <h3>📚 各科学习情况</h3><div class="subjectStats" id="dSubjects"></div>
+ <div class="weak"><b>🎯 家长关注建议</b><div id="dAdvice" style="margin-top:7px">暂无足够数据，先完成几组练习。</div></div>
+ <h3>🕘 最近学习记录</h3><div class="history" id="dHistory"></div>
+ <div class="dashNote">说明：当前版本使用本机 localStorage。孩子换设备或换浏览器后，家长无法跨设备查看；后续接入云同步即可实现手机远程查看。</div>
+</section>
+
+<div class="footer">Learning Quest v1.5 · Harry 专属学习档案 · 家长监控端 · CN / EN / DE</div>
+</main>
+<script>
+const LEARNERS=[["Harry","👦"]];
+let learner="Harry";
+let langMode=localStorage.getItem("lq-lang")||"tri";
+const key=(name)=>`lq-v13-${learner}-${name}`;
+const getNum=n=>+localStorage.getItem(key(n))||0;
+const setNum=(n,v)=>localStorage.setItem(key(n),v);
+let stars=getNum("stars"),clears=getNum("clears");
+
+const LOG_KEY=n=>`lq-v14-${n}-learning-log`;
+function getLog(n=learner){try{return JSON.parse(localStorage.getItem(LOG_KEY(n))||"[]")}catch(e){return []}}
+function saveLog(n,log){localStorage.setItem(LOG_KEY(n),JSON.stringify(log.slice(-500)))}
+function recordAttempt(q,chosen,correct){
+ let log=getLog();log.push({type:"attempt",time:Date.now(),subject:state.subject,level:state.level,unit:state.unit,question:q.cn,chosen:String(chosen),answer:q.ans,correct:!!correct});saveLog(learner,log)
+}
+function recordSession(){
+ let log=getLog();log.push({type:"session",time:Date.now(),subject:state.subject,level:state.level,unit:state.unit,score:state.score,total:10});saveLog(learner,log)
+}
+function renderDashboard(n=learner){
+ let log=getLog(n), attempts=log.filter(x=>x.type==="attempt"), sessions=log.filter(x=>x.type==="session");
+ let right=attempts.filter(x=>x.correct).length, wrong=attempts.length-right;
+ document.querySelector("#dTotal").textContent=attempts.length;
+ document.querySelector("#dAccuracy").textContent=attempts.length?Math.round(right/attempts.length*100)+"%":"0%";
+ document.querySelector("#dWrong").textContent=wrong;document.querySelector("#dSessions").textContent=sessions.length;
+ let by={};attempts.forEach(x=>{let z=by[x.subject]||(by[x.subject]={t:0,r:0,w:0});z.t++;x.correct?z.r++:z.w++});
+ let sb=document.querySelector("#dSubjects");sb.innerHTML="";
+ Object.entries(by).forEach(([k,v])=>{let d=document.createElement("div");d.className="subjectStat";d.innerHTML=`<b>${esc(k)}</b><br>${v.t} 题 · 正确率 ${Math.round(v.r/v.t*100)}% · 错 ${v.w} 题`;sb.appendChild(d)});
+ if(!Object.keys(by).length)sb.innerHTML='<div class="current">还没有学习记录。</div>';
+ let weak=Object.entries(by).filter(([k,v])=>v.t>=3).sort((a,b)=>a[1].r/a[1].t-b[1].r/b[1].t)[0];
+ document.querySelector("#dAdvice").textContent=weak?`${n} 当前最需要关注：${weak[0]}，已做 ${weak[1].t} 题，正确率 ${Math.round(weak[1].r/weak[1].t*100)}%。建议优先复习该科目的错题和薄弱知识点。`:"暂无足够数据，先完成几组练习后这里会自动给出建议。";
+ let hb=document.querySelector("#dHistory");hb.innerHTML="";
+ sessions.slice(-8).reverse().forEach(x=>{let d=document.createElement("div");d.className="historyItem";d.innerHTML=`<b>${esc(x.subject)} ${esc(x.level)} · ${esc(x.unit)}</b>　${x.score}/${x.total}（${x.score*10}%）<br><span class="current">${new Date(x.time).toLocaleString()}</span>`;hb.appendChild(d)});
+ if(!sessions.length)hb.innerHTML='<div class="current">还没有完成过整组闯关。</div>';
+}
+
+
+const SUBJECTS={
+"语文":{icon:"📚",en:"Chinese",de:"Chinesisch",desc:"G1–G6 · 识字、词语、阅读与表达",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","识字词语","阅读理解"]},
+"数学":{icon:"🧮",en:"Mathematics",de:"Mathematik",desc:"G1–G6 · 基础数学、奥数、等量代换、单位换算",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","基础数学","奥数","单位换算"]},
+"英语":{icon:"🌎",en:"English",de:"Englisch",desc:"G1–G6 · Vocabulary、Grammar、Reading",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","Vocabulary","Grammar"]},
+"德语":{icon:"🇩🇪",en:"German",de:"Deutsch",desc:"A1–A2 · Wortschatz、Lesen、Grammatik",levels:["A1.1","A1.2","A2.1","A2.2"],units:["综合","Wortschatz","Grammatik"]},
+"科学":{icon:"🔬",en:"Science",de:"Naturwissenschaften",desc:"G1–G6 · 生命、物质、地球与宇宙",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","生命科学","地球与物质"]},
+"综合挑战":{icon:"🏆",en:"Mixed Challenge",de:"Fächerübergreifende Aufgabe",desc:"跨学科任务 · 训练推理和解决问题能力",levels:["G1","G2","G3","G4","G5","G6"],units:["综合挑战"]}
+};
+const UI={"综合":["Mixed","Gemischt"],"识字词语":["Characters & Words","Schriftzeichen & Wörter"],"阅读理解":["Reading","Leseverständnis"],"基础数学":["Core Math","Grundmathematik"],"奥数":["Math Challenge","Mathe-Knobelei"],"单位换算":["Unit Conversion","Einheiten umrechnen"],"生命科学":["Life Science","Biowissenschaften"],"地球与物质":["Earth & Matter","Erde & Materie"],"综合挑战":["Mixed Challenge","Fächerübergreifende Aufgabe"],"Vocabulary":["Vocabulary","Wortschatz"],"Grammar":["Grammar","Grammatik"],"Wortschatz":["Vocabulary","Wortschatz"],"Grammatik":["Grammar","Grammatik"]};
+const esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function tri(cn,en,de){if(langMode==="zh")return esc(cn);if(langMode==="en")return esc(en);if(langMode==="de")return esc(de);return `<div class="tri"><span class="primary">CN: ${esc(cn)}</span><small>EN: ${esc(en)}</small><small>DE: ${esc(de)}</small></div>`}
+function ui(x){let t=UI[x]||[x,x];return tri(x,t[0],t[1])}
+function shuffle(a){for(let i=a.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+let state={subject:"数学",level:"G3",unit:"综合",index:0,score:0,answered:false,questions:[]};
+function renderProfiles(){}
+function switchLearner(n){}
+function renderSubjects(){let b=document.querySelector("#subjects");b.innerHTML="";Object.entries(SUBJECTS).forEach(([n,s])=>{let x=document.createElement("button");x.className="card";x.innerHTML=`<div class="icon">${s.icon}</div><h3>${tri(n,s.en,s.de)}</h3><p>${esc(s.desc)}</p>`;x.onclick=()=>selectSubject(n);b.appendChild(x)})}
+function selectSubject(n){state.subject=n;let s=SUBJECTS[n];state.level=s.levels[Math.min(2,s.levels.length-1)];state.unit=s.units[0];document.querySelector("#panel").classList.add("show");document.querySelector("#subjectTitle").innerHTML=s.icon+" "+tri(n,s.en,s.de);document.querySelector("#subjectDesc").textContent=s.desc;renderLevels();renderUnits();startQuest()}
+function renderLevels(){let b=document.querySelector("#levels");b.innerHTML="";SUBJECTS[state.subject].levels.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.level?" active":"");x.textContent=n;x.onclick=()=>{state.level=n;renderLevels();startQuest()};b.appendChild(x)})}
+function renderUnits(){let b=document.querySelector("#units");b.innerHTML="";SUBJECTS[state.subject].units.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.unit?" active":"");x.innerHTML=ui(n);x.onclick=()=>{state.unit=n;renderUnits();startQuest()};b.appendChild(x)})}
+function makeQ(i){
+ const g=state.level.startsWith("G")?+state.level.slice(1):1;
+ let cn,en,de,opts,ans,a,b,q;
+ if(state.subject==="数学"){
+   if(state.unit==="单位换算"){
+     const pools={
+       1:[["1 米 = ? 厘米","1 meter = ? centimeters","1 Meter = ? Zentimeter",["100","10","1000"],"100"],["1 千克 = ? 克","1 kilogram = ? grams","1 Kilogramm = ? Gramm",["1000","100","10"],"1000"]],
+       2:[["3 米 = ? 厘米","3 meters = ? centimeters","3 Meter = ? Zentimeter",["300","30","3000"],"300"],["2 千克 = ? 克","2 kilograms = ? grams","2 Kilogramm = ? Gramm",["2000","200","20"],"2000"]],
+       3:[["250 厘米 = ? 米 ? 厘米","250 cm = ? m ? cm","250 cm = ? m ? cm",["2米50厘米","25米","2米5厘米"],"2米50厘米"],["3 千克 500 克 = ? 克","3 kg 500 g = ? grams","3 kg 500 g = ? Gramm",["3500","3050","3005"],"3500"]],
+       4:[["2.5 千米 = ? 米","2.5 km = ? meters","2,5 km = ? Meter",["2500","250","25000"],"2500"],["3.2 升 = ? 毫升","3.2 L = ? mL","3,2 L = ? ml",["3200","320","32"],"3200"]],
+       5:[["0.75 平方米 = ? 平方厘米","0.75 m² = ? cm²","0,75 m² = ? cm²",["7500","750","75000"],"7500"],["2.4 吨 = ? 千克","2.4 tonnes = ? kg","2,4 Tonnen = ? kg",["2400","240","24000"],"2400"]],
+       6:[["1.25 立方米 = ? 立方分米","1.25 m³ = ? dm³","1,25 m³ = ? dm³",["1250","125","12500"],"1250"],["72 km/h = ? m/s","72 km/h = ? m/s","72 km/h = ? m/s",["20","12","25"],"20"]]
+     };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+   } else if(state.unit==="奥数"){
+     const pools={
+      1:[["小明有 8 颗糖，又得到 5 颗，送出 3 颗，还剩多少颗？","Ming has 8 candies, gets 5 more, then gives away 3. How many remain?","Ming hat 8 Bonbons, bekommt 5 dazu und gibt 3 weg. Wie viele bleiben?",["10","13","16"],"10"]],
+      2:[["一排有 6 人，4 排共有多少人？再来 3 人，一共多少人？","There are 6 people in each of 4 rows, then 3 more join. Total?","4 Reihen mit je 6 Personen, dann kommen 3 dazu. Insgesamt?",["27","24","21"],"27"]],
+      3:[["鸡和兔共有 8 只，共有 22 条腿。兔有几只？","There are 8 chickens and rabbits with 22 legs total. How many rabbits?","8 Hühner und Kaninchen haben zusammen 22 Beine. Wie viele Kaninchen?",["3","4","5"],"3"]],
+      4:[["一个数乘 5 再减 7 等于 28，这个数是多少？","A number times 5 minus 7 equals 28. What is the number?","Eine Zahl mal 5 minus 7 ergibt 28. Welche Zahl?",["7","5","9"],"7"]],
+      5:[["甲数是乙数的 3 倍，两数和为 48，乙数是多少？","A is 3 times B and their sum is 48. What is B?","A ist dreimal B, zusammen sind sie 48. Wie groß ist B?",["12","16","9"],"12"]],
+      6:[["某商品先涨价 20%，再降价 20%。最终价格与原价相比怎样？","A price rises 20% then falls 20%. Compared with the original price?","Ein Preis steigt um 20% und fällt danach um 20%. Vergleich zum Ursprungspreis?",["低4%","相同","高4%"],"低4%"]]
+     };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+   } else {
+     if(g===1){a=5+i%12;b=2+i%7;ans=a+b;cn=`${a} + ${b} = ?`}
+     else if(g===2){a=20+i*3;b=7+i;ans=a-b;cn=`${a} - ${b} = ?`}
+     else if(g===3){a=4+i%7;b=3+i%6;ans=a*b;cn=`${a} × ${b} = ?`}
+     else if(g===4){a=120+i*17;b=3+i%5;ans=a*b;cn=`${a} × ${b} = ?`}
+     else if(g===5){a=12+i;b=4+i%5;ans=(a*b)+15;cn=`${a} × ${b} + 15 = ?`}
+     else {a=24+i*2;b=6;ans=(a/b)*5;cn=`(${a} ÷ ${b}) × 5 = ?`}
+     en=de=cn;opts=[String(ans),String(ans+(g+1)),String(Math.max(0,ans-(g+2)))];ans=String(ans);
+   }
+ } else if(state.subject==="语文"){
+   const pools={
+    1:[
+     ["下面哪个字读“shān”？","Which character is pronounced shān?","Welches Zeichen wird shān ausgesprochen?",["山","水","火"],"山"],
+     ["“大”的反义词是哪一个？","What is the opposite of 大 (big)?","Was ist das Gegenteil von 大 (groß)?",["小","高","多"],"小"],
+     ["“妈妈___我去公园。”应填什么？","Complete: 妈妈 ___ 我去公园。","Ergänze: 妈妈 ___ 我去公园。",["带","戴","代"],"带"]
+    ],
+    2:[
+     ["“开心”的近义词是哪一个？","Which word is closest to 开心 (happy)?","Welches Wort bedeutet ungefähr 开心 (glücklich)?",["高兴","伤心","害怕"],"高兴"],
+     ["“小鸟在天空中飞。”这句话中的动物是什么？","What animal appears in the sentence?","Welches Tier kommt im Satz vor?",["小鸟","天空","飞机"],"小鸟"],
+     ["选择正确量词：一___书。","Choose the correct measure word for a book.","Wähle das richtige Zählwort für ein Buch.",["本","只","条"],"本"]
+    ],
+    3:[
+     ["“安静”的反义词是哪一个？","Which word is the opposite of 安静 (quiet)?","Was ist das Gegenteil von 安静 (ruhig)?",["热闹","整齐","认真"],"热闹"],
+     ["“因为下雨，所以比赛取消。”比赛取消的原因是什么？","Why was the match cancelled?","Warum wurde das Spiel abgesagt?",["下雨","比赛结束","天气炎热"],"下雨"],
+     ["“他跑得像风一样快”使用了什么修辞？","What figure of speech is used in 'He runs as fast as the wind'?","Welches Stilmittel wird bei 'Er rennt so schnell wie der Wind' verwendet?",["比喻","拟人","排比"],"比喻"]
+    ],
+    4:[
+     ["“坚持不懈”最接近下面哪个意思？","What best describes 坚持不懈?","Was bedeutet 坚持不懈 am ehesten?",["一直努力不放弃","做事很快","随意改变目标"],"一直努力不放弃"],
+     ["“虽然天气很冷，但是他仍然坚持晨跑。”这句话是什么关系？","What relationship connects the two clauses?","Welche Beziehung besteht zwischen den Satzteilen?",["转折","因果","递进"],"转折"],
+     ["“教室里安静得连一根针掉在地上都能听见。”主要使用什么手法？","What technique is mainly used in this sentence?","Welches Stilmittel wird hauptsächlich verwendet?",["夸张","排比","反问"],"夸张"]
+    ],
+    5:[
+     ["“临渊羡鱼，不如退而结网”主要说明什么？","What is the main idea of this saying?","Was ist die Kernaussage dieses Sprichworts?",["行动比空想重要","捕鱼很困难","应该离开河边"],"行动比空想重要"],
+     ["“书籍是人类进步的阶梯。”使用了什么修辞？","What figure of speech is used here?","Welches Stilmittel wird hier verwendet?",["比喻","反问","排比"],"比喻"],
+     ["阅读文章时，要概括中心思想，最重要的是关注什么？","When identifying a text's main idea, what matters most?","Was ist beim Bestimmen der Hauptaussage am wichtigsten?",["主要事件和作者表达的观点","每个生字的笔画","文章有多少行"],"主要事件和作者表达的观点"]
+    ],
+    6:[
+     ["“纸上得来终觉浅，绝知此事要躬行”强调什么？","What does this line emphasize?","Was betont dieser Vers?",["实践的重要性","读书没有用","知识越少越好"],"实践的重要性"],
+     ["“即使困难重重，我们也不能轻言放弃。”其中“即使……也……”是什么关系？","What relationship does 即使…也… express?","Welche Beziehung drückt 即使…也… aus?",["假设让步","因果","并列"],"假设让步"],
+     ["文章没有直接说明人物紧张，却写“他的手心全是汗，反复看着时钟”。这属于什么描写作用？","The text never says he is nervous, but describes sweaty palms and repeatedly checking the clock. What does this do?","Der Text sagt nicht direkt, dass er nervös ist, sondern beschreibt Schweiß und Blicke auf die Uhr. Was bewirkt das?",["通过细节表现心理状态","说明天气炎热","介绍时钟"],"通过细节表现心理状态"]
+    ]
+   };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+ } else if(state.subject==="英语"){
+   const pools={
+    1:[["Choose the animal.",["cat","book","red"],"cat"],["Choose the color.",["blue","run","dog"],"blue"]],
+    2:[['Complete: "She ___ my friend."',["is","are","am"],"is"],["Which is the plural of 'book'?",["books","bookes","book"],"books"]],
+    3:[['Complete: "He ___ to school every day."',["goes","go","going"],"goes"],["Choose the past tense of 'play'.",["played","plays","playing"],"played"]],
+    4:[['Complete: "I have lived here ___ 2024."',["since","for","at"],"since"],["Which sentence is correct?",["She has finished her homework.","She have finished her homework.","She finished has homework."],"She has finished her homework."]],
+    5:[['If it rains tomorrow, we ___ at home.',["will stay","stayed","stays"],"will stay"],["Choose the relative pronoun: The boy ___ won is my friend.",["who","which","where"],"who"]],
+    6:[['By the time we arrived, the film ___.',["had started","has started","starts"],"had started"],["Choose the best connector: ___ he was tired, he finished the work.",["Although","Because of","Unless"],"Although"]]
+   };q=pools[g][i%pools[g].length];cn="英语练习："+q[0];en=q[0];de="Englischübung: "+q[0];opts=q[1];ans=q[2];
+ } else if(state.subject==="科学"){
+   const pools={
+    1:[["植物生长通常需要什么？","What do plants usually need to grow?","Was brauchen Pflanzen normalerweise zum Wachsen?",["水和阳光","塑料","玻璃"],"水和阳光"]],
+    2:[["冰受热后通常会发生什么？","What usually happens when ice is heated?","Was passiert normalerweise, wenn Eis erwärmt wird?",["融化","结冰","消失成石头"],"融化"]],
+    3:[["水从液态变成水蒸气的过程叫做什么？","What is liquid water changing into water vapor called?","Wie heißt der Übergang von Wasser zu Wasserdampf?",["蒸发","凝固","沉淀"],"蒸发"]],
+    4:[["植物的叶片进行光合作用时主要吸收哪种气体？","Which gas do leaves mainly take in during photosynthesis?","Welches Gas nehmen Blätter hauptsächlich bei der Fotosynthese auf?",["二氧化碳","氧气","氮气"],"二氧化碳"]],
+    5:[["在简单电路中，如果开关断开，灯泡为什么不亮？","Why does a bulb go out when a switch opens a simple circuit?","Warum leuchtet eine Lampe nicht, wenn der Schalter den Stromkreis öffnet?",["电路不闭合，电流不能连续通过","电池立即没有电","灯泡质量变小"],"电路不闭合，电流不能连续通过"]],
+    6:[["月相变化的主要原因是什么？","What mainly causes the phases of the Moon?","Was verursacht hauptsächlich die Mondphasen?",["月球绕地球运动时我们看到的受光部分不同","月球自身周期性变亮变暗","地球每天遮住月球"],"月球绕地球运动时我们看到的受光部分不同"]]
+   };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+ } else if(state.subject==="德语"){
+   const lvl=state.level;
+   const pools={
+    "A1.1":[["Wie heißt du?",["Ich heiße Harry.","Ich bin acht Uhr.","Guten Appetit."],"Ich heiße Harry."],["Ich ___ acht Jahre alt.",["bin","bist","ist"],"bin"]],
+    "A1.2":[["Wir ___ heute Fußball.",["spielen","spielt","spielst"],"spielen"],["Ich gehe ___ Schule.",["zur","der","den"],"zur"]],
+    "A2.1":[["Gestern ___ ich meine Hausaufgaben gemacht.",["habe","bin","werde"],"habe"],["Ich bleibe zu Hause, ___ ich krank bin.",["weil","aber","oder"],"weil"]],
+    "A2.2":[["Wenn ich mehr Zeit hätte, ___ ich öfter lesen.",["würde","werde","bin"],"würde"],["Das ist der Mann, ___ mir geholfen hat.",["der","den","dem"],"der"]]
+   };q=pools[lvl][i%pools[lvl].length];cn="德语练习："+q[0];en="German exercise: "+q[0];de=q[0];opts=q[1];ans=q[2];
+ } else {
+   const pools={
+    1:["观察一株植物时，哪种做法最好？","What is best when observing a plant?","Was ist bei der Beobachtung einer Pflanze am besten?",["记录看到的变化","随便猜","不做记录"],"记录看到的变化"],
+    3:["要比较两种纸巾的吸水能力，怎样做更公平？","How can you fairly compare two paper towels' absorbency?","Wie vergleicht man fair die Saugfähigkeit zweier Papiertücher?",["使用相同大小纸巾和相同水量","一种用很多水","只试一次且条件不同"],"使用相同大小纸巾和相同水量"],
+    6:["实验结果与假设不一致时，科学上更合理的做法是什么？","If results disagree with a hypothesis, what is the more scientific response?","Was ist wissenschaftlich sinnvoll, wenn Ergebnisse der Hypothese widersprechen?",["检查方法和证据并修正假设","修改数据使其符合假设","忽略结果"],"检查方法和证据并修正假设"]
+   };q=pools[g>=5?6:g>=3?3:1];[cn,en,de,opts,ans]=q;
+ }
+ return {cn,en,de,opts:shuffle([...opts].map(String)),ans:String(ans)}
+}
+function startQuest(){state.index=0;state.score=0;state.answered=false;state.questions=Array.from({length:10},(_,i)=>makeQ(i));renderQ()}
+function renderQ(){let q=state.questions[state.index],c=document.querySelector("#challenge");c.innerHTML=`<div class="qnum">${esc(state.subject)} · ${esc(state.level)} · ${esc(state.unit)}</div><div class="question">${tri(q.cn,q.en,q.de)}</div><div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><div class="actions"><button class="next" id="next">下一题 →</button></div>`;q.opts.forEach(o=>{let b=document.createElement("button");b.className="choice";b.textContent=o;b.onclick=()=>answer(b,o,q);document.querySelector("#choices").appendChild(b)});document.querySelector("#next").onclick=nextQ;updateMeta()}
+function answer(btn,o,q){if(state.answered)return;recordAttempt(q,o,String(o)===q.ans);if(String(o)===q.ans){state.answered=true;state.score++;stars++;setNum("stars",stars);document.querySelector("#stars").textContent=stars;btn.classList.add("good");[...document.querySelector("#choices").children].forEach(x=>x.disabled=true);let f=document.querySelector("#feedback");f.textContent="✅ 正确！+1 ⭐";f.className="feedback ok";document.querySelector("#next").style.display="inline-block";updateMeta()}else{btn.classList.add("bad");btn.disabled=true;let f=document.querySelector("#feedback");f.textContent="再想一想。";f.className="feedback no"}}
+function nextQ(){if(!state.answered)return;state.index++;if(state.index>=10)finish();else{state.answered=false;renderQ()}}
+function finish(){recordSession();clears++;setNum("clears",clears);document.querySelector("#clears").textContent=clears;let pct=state.score*10;document.querySelector("#challenge").innerHTML=`<div style="text-align:center;padding:24px"><div style="font-size:48px">${pct>=80?"🏆":"🌟"}</div><h3>${learner} 本关完成！</h3><p><b>${state.score} / 10</b> 正确 · 正确率 ${pct}%</p><button class="next" style="display:inline-block" onclick="startQuest()">再挑战一次</button></div>`;document.querySelector("#heroText").textContent=`${learner} 刚完成 ${state.subject} ${state.level}，正确率 ${pct}%。`}
+function updateMeta(){let done=state.index+(state.answered?1:0);document.querySelector("#countText").textContent=`${Math.min(state.index+1,10)} / 10`;document.querySelector("#scoreText").textContent=`得分 ${state.score}`;document.querySelector("#qbar").style.width=(done/10*100)+"%";document.querySelector("#bar").style.width=Math.min(100,10+stars%91)+"%"}
+
+let dashLearner=learner;
+function renderDashLearners(){
+ let b=document.querySelector("#dashLearners");b.innerHTML="";
+ (["Harry"]).forEach(n=>{let x=document.createElement("button");x.className="profile"+(n===dashLearner?" active":"");x.textContent=n;x.onclick=()=>{dashLearner=n;renderDashLearners();renderDashboard(n)};b.appendChild(x)})
+}
+document.querySelector("#parentBtn").onclick=()=>{dashLearner=learner;document.querySelector("#parentDash").classList.remove("hidden");renderDashLearners();renderDashboard(dashLearner);document.querySelector("#parentDash").scrollIntoView({behavior:"smooth"})};
+document.querySelector("#closeDash").onclick=()=>document.querySelector("#parentDash").classList.add("hidden");
+
+document.querySelector("#restart").onclick=startQuest;
+document.querySelectorAll(".langbtn").forEach(b=>b.onclick=()=>{langMode=b.dataset.lang;localStorage.setItem("lq-lang",langMode);document.querySelectorAll(".langbtn").forEach(x=>x.classList.toggle("active",x.dataset.lang===langMode));renderSubjects();renderUnits();renderQ()});
+document.querySelector("#stars").textContent=stars;document.querySelector("#clears").textContent=clears;document.querySelector("#learnerName").textContent=learner;document.querySelector("#welcome").textContent=`${learner}，今天继续升级吧！`;renderProfiles();renderSubjects();selectSubject("数学");
+</script></body></html>
