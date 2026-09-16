@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#5b67f1">
+<title>Learning Quest · 全科学习大冒险</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--accent:#5b67f1;--accent2:#8a5cf5;--ok:#16a36a;--bad:#d92d20;--line:#dce1ed;--shadow:0 12px 35px #17203314}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:linear-gradient(180deg,#eef2ff,var(--bg) 300px);color:var(--ink)}
+button{font:inherit}.wrap{max-width:1050px;margin:auto;padding:24px 18px 70px}header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}
+.brand h1{margin:0;font-size:clamp(28px,5vw,44px)}.brand p{margin:7px 0;color:var(--muted)}.stats{display:flex;gap:8px;flex-wrap:wrap}.badge{background:#fff;padding:10px 14px;border-radius:16px;box-shadow:var(--shadow);white-space:nowrap}
+.profilebar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.profile{border:1px solid var(--line);background:#fff;border-radius:16px;padding:10px 15px;cursor:pointer;box-shadow:var(--shadow);font-weight:700}.profile.active{background:#172033;color:#fff;border-color:#172033}
+.current{margin:0 0 10px;color:var(--muted);font-size:14px}
+.hero{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:28px;padding:25px;box-shadow:var(--shadow)}.hero h2{margin:0 0 7px}.progress{height:13px;background:#ffffff3a;border-radius:99px;overflow:hidden;margin-top:16px}.progress i{display:block;height:100%;background:#fff;border-radius:99px;transition:.3s}
+.section-title{margin:28px 2px 13px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:0;text-align:left;background:var(--card);border-radius:22px;padding:19px;box-shadow:var(--shadow);cursor:pointer;min-height:142px;color:inherit;transition:.15s}.card:hover{transform:translateY(-2px)}.icon{font-size:34px}.card h3{margin:9px 0 4px}.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+.panel{display:none;margin-top:20px;background:#fff;border-radius:25px;padding:22px;box-shadow:var(--shadow)}.panel.show{display:block}.panelTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.panel h2{margin:0 0 5px}
+.levels,.units{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.pill{border:1px solid var(--line);background:#fafbff;border-radius:14px;padding:9px 13px;cursor:pointer}.pill.active{background:#172033;color:#fff;border-color:#172033}.units .pill.active{background:var(--accent);border-color:var(--accent)}
+.questMeta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:18px}.miniProgress{height:9px;background:#e8ebf3;border-radius:99px;overflow:hidden;flex:1}.miniProgress i{display:block;height:100%;background:var(--accent);transition:.3s}
+.challenge{margin-top:12px;padding:20px;border-radius:20px;background:#f7f8fc}.qnum{color:var(--muted);font-size:14px}.question{font-size:19px;line-height:1.6;margin:10px 0 15px;font-weight:650}.choices{display:grid;gap:9px}.choice{padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left;cursor:pointer;font-size:16px}.choice.good{border-color:var(--ok);background:#eafaf3}.choice.bad{border-color:#f0aaa5;background:#fff0ef}.feedback{min-height:28px;margin:13px 0 0;font-weight:650}.feedback.ok{color:var(--ok)}.feedback.no{color:var(--bad)}
+.actions{display:flex;gap:9px;margin-top:10px}.next,.reset{border:0;border-radius:14px;padding:11px 16px;cursor:pointer}.next{background:var(--accent);color:#fff;display:none}.reset{background:#eceff6;color:var(--ink)}
+.langbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}.langbtn{border:1px solid #ffffff66;background:#ffffff18;color:#fff;border-radius:12px;padding:8px 11px;cursor:pointer}.langbtn.active{background:#fff;color:#4f46e5}.tri{display:grid;gap:4px}.tri small{display:block;color:var(--muted);font-weight:500}.tri .primary{font-weight:700;color:var(--ink)}.footer{text-align:center;color:var(--muted);margin-top:32px;font-size:13px}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}header{align-items:flex-start;flex-direction:column}}@media(max-width:440px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 55px}}
+
+.parentBtn{border:0;border-radius:14px;padding:10px 14px;background:#fff;color:#172033;box-shadow:var(--shadow);cursor:pointer;font-weight:700}
+.parentDash{margin-top:22px;background:#fff;border-radius:25px;padding:22px;box-shadow:var(--shadow)}
+.parentDash.hidden{display:none}.dashHead{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.dashGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.metric{background:#f7f8fc;border-radius:16px;padding:14px}.metric b{display:block;font-size:25px;margin-top:5px}
+.subjectStats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.subjectStat{border:1px solid var(--line);border-radius:14px;padding:12px}
+.history{margin-top:16px;display:grid;gap:8px}.historyItem{border:1px solid var(--line);border-radius:14px;padding:12px;font-size:14px}
+.weak{margin-top:16px;background:#fff8e8;border-radius:16px;padding:14px}.dashNote{font-size:13px;color:var(--muted);margin-top:12px}
+@media(max-width:720px){.dashGrid{grid-template-columns:repeat(2,1fr)}.subjectStats{grid-template-columns:1fr}}
+
+
+.qtools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+.speakBtn,.explainBtn{border:0;border-radius:13px;padding:10px 13px;cursor:pointer;font-weight:750}
+.speakBtn{background:#eaf0ff;color:#3044c7}.explainBtn{background:#fff1ce;color:#855400;display:none}
+.teachbox{display:none;margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:18px;padding:15px}
+.teachbox.show{display:block}.animStage{min-height:105px;background:#f7f8fc;border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.anim{font-size:25px;font-weight:800;opacity:0;transform:translateY(12px);animation:pop .38s forwards}
+@keyframes pop{to{opacity:1;transform:none}}.teachText{margin-top:11px;line-height:1.65}
+
+
+.mathHub{margin-top:16px;border:1px solid var(--line);border-radius:22px;padding:18px;background:#fff}.mathHub.hidden{display:none}
+.mathTabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.mathTab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 12px;cursor:pointer;font-weight:700}.mathTab.on{background:#172033;color:#fff}
+.lessonGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.lessonCard{border:1px solid var(--line);border-radius:17px;padding:14px;background:#fff;cursor:pointer}.lessonCard b{display:block;margin-bottom:5px}.lessonCard small{color:var(--muted);line-height:1.45}
+.visualLesson{margin-top:14px;border-radius:18px;background:#f7f8fc;padding:16px;display:none}.visualLesson.show{display:block}.tenframe{display:grid;grid-template-columns:repeat(5,38px);gap:5px;justify-content:center;margin:12px}.cell{width:38px;height:38px;border:2px solid #8b94a7;border-radius:8px;display:grid;place-items:center}.dot{width:23px;height:23px;border-radius:50%;background:#172033}
+.barwrap{display:flex;justify-content:center;align-items:stretch;margin:16px auto;max-width:540px}.barseg{min-width:45px;padding:16px 8px;border:2px solid #5d6b85;text-align:center;background:#fff}.shapeStage{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;margin:14px}.rect{width:150px;height:85px;border:4px solid #39465f;display:grid;place-items:center;font-weight:800}.circleShape{width:110px;height:110px;border-radius:50%;border:4px solid #39465f;display:grid;place-items:center;font-weight:800}.fracCircle{width:130px;height:130px;border-radius:50%;background:conic-gradient(#172033 0 25%,#e7eaf1 25% 100%);position:relative}.fracCircle:after{content:"1/4";position:absolute;inset:32px;display:grid;place-items:center;font-weight:900;background:#fff;border-radius:50%}.mathGame{margin-top:14px;background:#fff8e8;border-radius:18px;padding:15px}.gameGrid{display:grid;grid-template-columns:repeat(3,64px);gap:5px;justify-content:center;margin:12px}.gameCell{height:58px;border:1px solid #d8dce7;border-radius:10px;display:grid;place-items:center;font-weight:800;background:#fff}.sourceTag{display:inline-block;font-size:12px;border-radius:999px;padding:4px 8px;background:#eef2ff;color:#4352a7;margin-top:6px}
+@media(max-width:720px){.lessonGrid{grid-template-columns:1fr}.mathHub{padding:13px}}
+
+/* v2.1 knowledge-point practice */
+.problemVisual{margin:12px 0;padding:14px;border-radius:16px;background:#f7f8fc;text-align:center}
+.objectRow{font-size:30px;letter-spacing:5px;line-height:1.7}
+.miniBar{display:flex;max-width:520px;margin:12px auto}.miniBar span{border:2px solid #596780;padding:14px 8px;background:#fff;flex:1}
+.fracStrip{display:flex;max-width:360px;margin:12px auto}.fracStrip span{height:46px;border:2px solid #596780;flex:1}.fracStrip .fill{background:#dfe5ff}
+.v21tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#eaf7ee;color:#27613a;font-size:12px;font-weight:800;margin-bottom:8px}
+
+/* v2.2 unified math navigation + real number-sense/substitution tasks */
+.v22Nav{margin:12px 0;padding:12px;border-radius:16px;background:#f7f9ff;border:1px solid var(--line)}
+.v22Title{font-weight:900;margin-bottom:8px}.v22Modules{display:flex;gap:8px;flex-wrap:wrap}
+.v22Module{border:1px solid var(--line);background:#fff;border-radius:13px;padding:9px 11px;cursor:pointer;font-weight:750}
+.v22Module.on{background:#172033;color:#fff}
+.nsTen{display:grid;grid-template-columns:repeat(5,44px);gap:5px;justify-content:center;margin:12px auto}
+.nsCell{width:44px;height:44px;border:2px solid #7c879d;border-radius:8px;display:grid;place-items:center;font-size:24px}
+.nsLine{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:22px;margin:14px}
+.nsBox{min-width:48px;padding:10px;border:2px solid #77839a;border-radius:10px;background:#fff;font-weight:850}
+.subEq{font-size:28px;line-height:1.8;text-align:center;font-weight:850}
+.searchGrid{display:grid;grid-template-columns:repeat(4,52px);gap:5px;justify-content:center;margin:12px auto}
+.searchGrid span{height:48px;border:1px solid #cfd5e2;border-radius:9px;display:grid;place-items:center;background:#fff;font-weight:800}
+.addSquare{display:grid;grid-template-columns:repeat(3,58px);gap:5px;justify-content:center;margin:12px auto}
+.addSquare span{height:54px;border:2px solid #69758d;border-radius:9px;display:grid;place-items:center;background:#fff;font-weight:850}
+</style></head>
+<body><main class="wrap">
+<header><div class="brand"><h1>🚀 Learning Quest</h1><p>小学全科学习大冒险 · 学一点，闯一关</p></div><div class="stats"><div class="badge">⭐ <b id="stars">0</b> 星</div><div class="badge">🔥 <b id="clears">0</b> 次通关</div><button class="parentBtn" id="parentBtn">👨‍👩‍👧 家长中心</button></div></header>
+<div class="current">当前学习者 / Current learner / Aktueller Lernender：<b id="learnerName">Kevin</b></div>
+<div class="profilebar" id="profiles"></div>
+<section class="hero"><h2 id="welcome">Kevin，今天继续升级吧！</h2><div id="heroText">选择一个科目和等级，开始 10 题闯关。</div><div class="langbar"><button class="langbtn active" data-lang="tri">CN / EN / DE 三语</button><button class="langbtn" data-lang="zh">CN 中文</button><button class="langbtn" data-lang="en">EN English</button><button class="langbtn" data-lang="de">DE Deutsch</button></div><div class="progress"><i id="bar"></i></div></section>
+<h2 class="section-title">选择科目</h2><section class="grid" id="subjects"></section>
+<section class="panel" id="panel"><div class="panelTop"><div><h2 id="subjectTitle"></h2><div id="subjectDesc"></div></div><button class="reset" id="restart">重新开始本关</button></div>
+<div class="levels" id="levels"></div><div class="units" id="units"></div>
+<div class="questMeta"><span id="scoreText">得分 0</span><div class="miniProgress"><i id="qbar"></i></div><span id="countText">1 / 10</span></div>
+<section class="mathHub hidden" id="mathHub"><h2 style="margin:0">🧮 数学学习中心 · Math Learning Hub</h2><div class="current">课程 → 图形理解 → 基础练习 → 应用题 → 数学思维 → 错题强化</div><div class="mathTabs" id="mathTabs"></div><div class="lessonGrid" id="lessonGrid"></div><div class="visualLesson" id="visualLesson"></div></section><div class="v22Nav" id="v22Nav" style="display:none"><div class="v22Title" id="v22Title">数学课程模块</div><div class="v22Modules" id="v22Modules"></div></div><div class="challenge" id="challenge"></div></section>
+
+<section class="parentDash hidden" id="parentDash">
+ <div class="dashHead"><div><h2 style="margin:0">👨‍👩‍👧 家长中心 · Parent Dashboard</h2><div class="current">学习数据仅保存在当前设备浏览器</div></div><button class="reset" id="closeDash">关闭</button></div>
+ <div id="dashLearners" class="profilebar"></div>
+ <div class="dashGrid">
+  <div class="metric">累计答题<b id="dTotal">0</b></div>
+  <div class="metric">正确率<b id="dAccuracy">0%</b></div>
+  <div class="metric">累计错题<b id="dWrong">0</b></div>
+  <div class="metric">完成闯关<b id="dSessions">0</b></div>
+ </div>
+ <h3>📚 各科学习情况</h3><div class="subjectStats" id="dSubjects"></div>
+ <div class="weak"><b>🎯 家长关注建议</b><div id="dAdvice" style="margin-top:7px">暂无足够数据，先完成几组练习。</div></div>
+ <h3>🕘 最近学习记录</h3><div class="history" id="dHistory"></div>
+ <div class="dashNote">说明：当前版本使用本机 localStorage。孩子换设备或换浏览器后，家长无法跨设备查看；后续接入云同步即可实现手机远程查看。</div>
+</section>
+
+<div class="footer">Learning Quest v2.2 · 家长监控端 · Kevin / Camilla / Daniel 独立学习档案 · CN / EN / DE</div>
+</main>
+<script>
+const LEARNERS=[["Kevin","👦"],["Camilla","👧"],["Daniel","👦"]];
+let learner=localStorage.getItem("lq-learner")||"Kevin";
+let langMode=localStorage.getItem("lq-lang")||"tri";
+const key=(name)=>`lq-v13-${learner}-${name}`;
+const getNum=n=>+localStorage.getItem(key(n))||0;
+const setNum=(n,v)=>localStorage.setItem(key(n),v);
+let stars=getNum("stars"),clears=getNum("clears");
+
+const LOG_KEY=n=>`lq-v14-${n}-learning-log`;
+function getLog(n=learner){try{return JSON.parse(localStorage.getItem(LOG_KEY(n))||"[]")}catch(e){return []}}
+function saveLog(n,log){localStorage.setItem(LOG_KEY(n),JSON.stringify(log.slice(-500)))}
+function recordAttempt(q,chosen,correct){
+ let log=getLog();log.push({type:"attempt",time:Date.now(),subject:state.subject,level:state.level,unit:state.unit,question:q.cn,chosen:String(chosen),answer:q.ans,correct:!!correct});saveLog(learner,log)
+}
+function recordSession(){
+ let log=getLog();log.push({type:"session",time:Date.now(),subject:state.subject,level:state.level,unit:state.unit,score:state.score,total:10});saveLog(learner,log)
+}
+function renderDashboard(n=learner){
+ let log=getLog(n), attempts=log.filter(x=>x.type==="attempt"), sessions=log.filter(x=>x.type==="session");
+ let right=attempts.filter(x=>x.correct).length, wrong=attempts.length-right;
+ document.querySelector("#dTotal").textContent=attempts.length;
+ document.querySelector("#dAccuracy").textContent=attempts.length?Math.round(right/attempts.length*100)+"%":"0%";
+ document.querySelector("#dWrong").textContent=wrong;document.querySelector("#dSessions").textContent=sessions.length;
+ let by={};attempts.forEach(x=>{let z=by[x.subject]||(by[x.subject]={t:0,r:0,w:0});z.t++;x.correct?z.r++:z.w++});
+ let sb=document.querySelector("#dSubjects");sb.innerHTML="";
+ Object.entries(by).forEach(([k,v])=>{let d=document.createElement("div");d.className="subjectStat";d.innerHTML=`<b>${esc(k)}</b><br>${v.t} 题 · 正确率 ${Math.round(v.r/v.t*100)}% · 错 ${v.w} 题`;sb.appendChild(d)});
+ if(!Object.keys(by).length)sb.innerHTML='<div class="current">还没有学习记录。</div>';
+ let weak=Object.entries(by).filter(([k,v])=>v.t>=3).sort((a,b)=>a[1].r/a[1].t-b[1].r/b[1].t)[0];
+ document.querySelector("#dAdvice").textContent=weak?`${n} 当前最需要关注：${weak[0]}，已做 ${weak[1].t} 题，正确率 ${Math.round(weak[1].r/weak[1].t*100)}%。建议优先复习该科目的错题和薄弱知识点。`:"暂无足够数据，先完成几组练习后这里会自动给出建议。";
+ let hb=document.querySelector("#dHistory");hb.innerHTML="";
+ sessions.slice(-8).reverse().forEach(x=>{let d=document.createElement("div");d.className="historyItem";d.innerHTML=`<b>${esc(x.subject)} ${esc(x.level)} · ${esc(x.unit)}</b>　${x.score}/${x.total}（${x.score*10}%）<br><span class="current">${new Date(x.time).toLocaleString()}</span>`;hb.appendChild(d)});
+ if(!sessions.length)hb.innerHTML='<div class="current">还没有完成过整组闯关。</div>';
+}
+
+
+const SUBJECTS={
+"语文":{icon:"📚",en:"Chinese",de:"Chinesisch",desc:"G1–G6 · 识字、词语、阅读与表达",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","识字词语","阅读理解"]},
+"数学":{icon:"🧮",en:"Mathematics",de:"Mathematik",desc:"G1–G6 · 基础数学、奥数、等量代换、单位换算",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","基础数学","奥数","单位换算"]},
+"英语":{icon:"🌎",en:"English",de:"Englisch",desc:"G1–G6 · Vocabulary、Grammar、Reading",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","Vocabulary","Grammar"]},
+"德语":{icon:"🇩🇪",en:"German",de:"Deutsch",desc:"A1–A2 · Wortschatz、Lesen、Grammatik",levels:["A1.1","A1.2","A2.1","A2.2"],units:["综合","Wortschatz","Grammatik"]},
+"科学":{icon:"🔬",en:"Science",de:"Naturwissenschaften",desc:"G1–G6 · 生命、物质、地球与宇宙",levels:["G1","G2","G3","G4","G5","G6"],units:["综合","生命科学","地球与物质"]},
+"综合挑战":{icon:"🏆",en:"Mixed Challenge",de:"Fächerübergreifende Aufgabe",desc:"跨学科任务 · 训练推理和解决问题能力",levels:["G1","G2","G3","G4","G5","G6"],units:["综合挑战"]}
+};
+const UI={"综合":["Mixed","Gemischt"],"识字词语":["Characters & Words","Schriftzeichen & Wörter"],"阅读理解":["Reading","Leseverständnis"],"基础数学":["Core Math","Grundmathematik"],"奥数":["Math Challenge","Mathe-Knobelei"],"单位换算":["Unit Conversion","Einheiten umrechnen"],"生命科学":["Life Science","Biowissenschaften"],"地球与物质":["Earth & Matter","Erde & Materie"],"综合挑战":["Mixed Challenge","Fächerübergreifende Aufgabe"],"Vocabulary":["Vocabulary","Wortschatz"],"Grammar":["Grammar","Grammatik"],"Wortschatz":["Vocabulary","Wortschatz"],"Grammatik":["Grammar","Grammatik"]};
+const esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function tri(cn,en,de){if(langMode==="zh")return esc(cn);if(langMode==="en")return esc(en);if(langMode==="de")return esc(de);return `<div class="tri"><span class="primary">CN: ${esc(cn)}</span><small>EN: ${esc(en)}</small><small>DE: ${esc(de)}</small></div>`}
+function ui(x){let t=UI[x]||[x,x];return tri(x,t[0],t[1])}
+function shuffle(a){for(let i=a.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+let state={subject:"数学",level:"G3",unit:"综合",index:0,score:0,answered:false,questions:[]};
+function renderProfiles(){let b=document.querySelector("#profiles");b.innerHTML="";LEARNERS.forEach(([n,e])=>{let x=document.createElement("button");x.className="profile"+(n===learner?" active":"");x.textContent=`${e} ${n}`;x.onclick=()=>switchLearner(n);b.appendChild(x)})}
+function switchLearner(n){learner=n;localStorage.setItem("lq-learner",n);stars=getNum("stars");clears=getNum("clears");document.querySelector("#stars").textContent=stars;document.querySelector("#clears").textContent=clears;document.querySelector("#learnerName").textContent=n;document.querySelector("#welcome").textContent=`${n}，今天继续升级吧！`;renderProfiles();startQuest()}
+function renderSubjects(){let b=document.querySelector("#subjects");b.innerHTML="";Object.entries(SUBJECTS).forEach(([n,s])=>{let x=document.createElement("button");x.className="card";x.innerHTML=`<div class="icon">${s.icon}</div><h3>${tri(n,s.en,s.de)}</h3><p>${esc(s.desc)}</p>`;x.onclick=()=>selectSubject(n);b.appendChild(x)})}
+
+const _renderLevelUnitV22=renderLevelUnit;
+renderLevelUnit=function(){
+ _renderLevelUnitV22();
+ if(state.subject==="数学"){
+   // Rewire visible G1-G6 buttons so the active question changes immediately.
+   document.querySelectorAll("#levels button").forEach(b=>{
+     const lv=b.textContent.trim();
+     if(/^G[1-6]$/.test(lv)) b.onclick=()=>v22SetLevel(lv);
+   });
+   // The old four generic units conflict with the real course tree; replace them with grade-specific modules.
+   const units=document.querySelector("#units");
+   if(units) units.innerHTML=V22_MODULES[state.level].map((x,i)=>`<button class="${i===mathTopic?"active":""}" onclick="v22SetModule(${i})">${tri(x,x,x)}</button>`).join("");
+   renderV22Nav();
+ }
+};
+
+function selectSubject(n){state.subject=n;let s=SUBJECTS[n];state.level=s.levels[Math.min(2,s.levels.length-1)];state.unit=s.units[0];document.querySelector("#panel").classList.add("show");document.querySelector("#subjectTitle").innerHTML=s.icon+" "+tri(n,s.en,s.de);document.querySelector("#subjectDesc").textContent=s.desc;renderLevels();renderUnits();startQuest()}
+function renderLevels(){let b=document.querySelector("#levels");b.innerHTML="";SUBJECTS[state.subject].levels.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.level?" active":"");x.textContent=n;x.onclick=()=>{state.level=n;renderLevels();startQuest()};b.appendChild(x)})}
+function renderUnits(){let b=document.querySelector("#units");b.innerHTML="";SUBJECTS[state.subject].units.forEach(n=>{let x=document.createElement("button");x.className="pill"+(n===state.unit?" active":"");x.innerHTML=ui(n);x.onclick=()=>{state.unit=n;renderUnits();startQuest()};b.appendChild(x)})}
+
+const MATH_TOPIC_KEY="lq-math-topic";
+let mathTopic=+(localStorage.getItem(MATH_TOPIC_KEY)||0);
+
+function mq(cn,en,de,opts,ans,visual="",explain=""){
+ return {cn,en,de,opts:[...opts].map(String),ans:String(ans),visual,explain}
+}
+function mathV21(i){
+ const g=+state.level.slice(1), t=mathTopic, k=i%5;
+ const bars=(a,b,u="?")=>`<div class="problemVisual"><div class="miniBar"><span>${a}</span><span>${b}</span><span>${u}</span></div><small>Bar Model · 条形模型</small></div>`;
+ const objects=(emoji,rows,cols)=>`<div class="problemVisual">${Array.from({length:rows},()=>`<div class="objectRow">${emoji.repeat(cols)}</div>`).join("")}</div>`;
+ const frac=(n,d)=>`<div class="problemVisual"><div class="fracStrip">${Array.from({length:d},(_,j)=>`<span class="${j<n?'fill':''}"></span>`).join("")}</div><b>${n}/${d}</b></div>`;
+ let bank=[];
+ if(g===1){
+  if(t===0) bank=[
+   mq("十格图中已经有 7 个点。还要加几个点才能变成 10？","There are 7 dots. How many more make 10?","Es gibt 7 Punkte. Wie viele fehlen bis 10?",["3","2","4"],"3",objects("●",1,7),"7和3组成10。"),
+   mq("从 12 开始向后数 3 个数，会到几？","Count back 3 from 12. Where do you land?","Zähle von 12 drei Schritte zurück.",["9","10","8"],"9","","12→11→10→9。")];
+  else if(t===1) bank=[
+   mq("篮子里有 8 个苹果，又放进 5 个。现在有多少个？","8 apples, then 5 more. How many now?","8 Äpfel, dann 5 dazu. Wie viele?",["13","12","14"],"13",objects("🍎",2,4),"先算8+5，可以把5拆成2和3：8+2=10，10+3=13。"),
+   mq("有 15 辆小汽车，开走 6 辆，还剩多少辆？","15 cars, 6 leave. How many remain?","15 Autos, 6 fahren weg. Wie viele bleiben?",["9","8","10"],"9","","15-5=10，再减1，得到9。")];
+  else if(t===2) bank=[
+   mq("哪一个物体通常最长？","Which is usually the longest?","Welcher Gegenstand ist normalerweise am längsten?",["铅笔","橡皮","回形针"],"铅笔","","先比较物体的长度，不是数量。"),
+   mq("现在是 3 点整，2 小时后是几点？","It is 3 o'clock. What time is it 2 hours later?","Es ist 3 Uhr. Wie spät ist es zwei Stunden später?",["5点","4点","6点"],"5点","","3→4→5。")];
+  else if(t===3) bank=[
+   mq("一个图形有 3 条边、3 个角，它是什么？","A shape has 3 sides and 3 corners. What is it?","Eine Form hat 3 Seiten und 3 Ecken. Welche?",["三角形","正方形","圆形"],"三角形","<div class='problemVisual' style='font-size:70px'>△</div>","三角形有3条边和3个角。"),
+   mq("规律：🔵🔴🔵🔴🔵，下一个是什么？","Pattern: blue, red, blue, red, blue. What comes next?","Muster: blau, rot, blau, rot, blau. Was kommt als Nächstes?",["🔴","🔵","🟢"],"🔴","","规律是蓝、红交替。")];
+  else if(t===4) bank=[
+   mq("Kevin 有 6 本书，Camilla 有 4 本书。他们一共有多少本？","Kevin has 6 books and Camilla has 4. How many altogether?","Kevin hat 6 Bücher, Camilla 4. Wie viele zusammen?",["10","9","11"],"10",bars("6","4","?"),"“一共”表示把两部分合起来：6+4=10。"),
+   mq("盒子里有 12 个球，拿走 5 个。剩下多少个？","There are 12 balls; 5 are taken away. How many remain?","12 Bälle, 5 werden weggenommen. Wie viele bleiben?",["7","6","8"],"7",bars("12","拿走5","剩余?"),"整体12减去拿走的5：12-5=7。")];
+  else bank=[
+   mq("🍎+🍎=10，那么一个🍎是多少？","Apple + apple = 10. What is one apple?","Apfel + Apfel = 10. Wie viel ist ein Apfel?",["5","10","2"],"5","<div class='problemVisual' style='font-size:34px'>🍎 + 🍎 = 10</div>","两个相同苹果合计10，所以平均分成2份：10÷2=5。"),
+   mq("2, 4, 6, 8, __","Complete the pattern: 2,4,6,8,__","Ergänze: 2,4,6,8,__",["10","9","12"],"10","","每次加2。")];
+ } else if(g===2){
+  if(t===0) bank=[
+   mq("由 4 个百、3 个十和 6 个一组成的数是多少？","4 hundreds, 3 tens and 6 ones make what number?","4 Hunderter, 3 Zehner und 6 Einer ergeben?",["436","463","346"],"436","","400+30+6=436。"),
+   mq("598 后面的第二个数是多少？","What is the second number after 598?","Welche Zahl kommt zwei Schritte nach 598?",["600","599","601"],"600","","598→599→600。")];
+  else if(t===1) bank=[
+   mq("每盘有 4 个橙子，3 盘共有多少个？","4 oranges on each plate, 3 plates. Total?","4 Orangen pro Teller, 3 Teller. Insgesamt?",["12","7","16"],"12",objects("🍊",3,4),"3组4就是3×4=12。"),
+   mq("20 块饼干平均分给 5 个孩子，每人几块？","20 cookies shared equally among 5 children. How many each?","20 Kekse gleichmäßig auf 5 Kinder. Wie viele pro Kind?",["4","5","3"],"4","","20÷5=4。")];
+  else if(t===2) bank=[
+   mq("商店上午卖出 18 个球，下午比上午多卖 7 个。全天共卖多少个？","18 balls were sold in the morning; afternoon sales were 7 more. How many all day?","Morgens 18 Bälle, nachmittags 7 mehr. Wie viele insgesamt?",["43","25","36"],"43",bars("上午18","下午18+7","全天?"),"下午=18+7=25；全天=18+25=43。"),
+   mq("一本书有 45 页，第一天读 12 页，第二天读 15 页。还剩多少页？","A 45-page book: 12 pages day 1 and 15 day 2. How many remain?","45 Seiten; 12 und 15 gelesen. Wie viele bleiben?",["18","27","20"],"18",bars("45","读12+15","剩余?"),"先算读了12+15=27，再算45-27=18。")];
+  else if(t===3) bank=[
+   mq("一个披萨平均分成 4 份，吃了 1 份。吃了几分之几？","A pizza is split into 4 equal parts; 1 is eaten. What fraction?","Pizza in 4 gleiche Teile, 1 gegessen. Welcher Bruch?",["1/4","1/2","3/4"],"1/4",frac(1,4),"整体平均分4份，取1份就是1/4。"),
+   mq("哪个分数表示“一半”？","Which fraction means one half?","Welcher Bruch bedeutet die Hälfte?",["1/2","1/3","2/3"],"1/2",frac(1,2),"一半就是平均分成2份取1份。")];
+  else if(t===4) bank=[
+   mq("一瓶水有 1 升，2 瓶共有多少升？","Each bottle holds 1 litre. How much do 2 bottles hold?","Eine Flasche enthält 1 Liter. Wie viel sind 2 Flaschen?",["2升","1升","3升"],"2升","","1+1=2升。"),
+   mq("现在 8:30，再过 30 分钟是几点？","It is 8:30. What time is it in 30 minutes?","Es ist 8:30. Wie spät ist es in 30 Minuten?",["9:00","8:60","9:30"],"9:00","","30分钟后分钟数到60，进1小时。")];
+  else bank=[
+   mq("⭐+⭐=12，⭐+🌙=10。🌙是多少？","Star+star=12; star+moon=10. What is moon?","Stern+Stern=12; Stern+Mond=10. Mond?",["4","6","2"],"4","<div class='problemVisual' style='font-size:34px'>⭐+⭐=12<br>⭐+🌙=10</div>","先求⭐=6，再代入6+🌙=10，所以🌙=4。"),
+   mq("5,10,15,20,__","Complete the skip-counting pattern.","Ergänze die Zahlenfolge.",["25","24","30"],"25","","每次加5。")];
+ } else if(g===3){
+  if(t===0) bank=[
+   mq("4,306 中数字 3 表示多少？","In 4,306, what value does digit 3 represent?","Welchen Wert hat die 3 in 4.306?",["300","30","3"],"300","","3在百位，所以表示300。"),
+   mq("2,785 + 1,426 = ?","2,785 + 1,426 = ?","2.785 + 1.426 = ?",["4211","4111","4311"],"4211","","按个位、十位、百位、千位依次相加并处理进位。")];
+  else if(t===1) bank=[
+   mq("24 × 6 = ?","24 × 6 = ?","24 × 6 = ?",["144","124","164"],"144",objects("●",3,4),"可以拆成20×6 + 4×6 = 120+24=144。"),
+   mq("156 ÷ 6 = ?","156 ÷ 6 = ?","156 ÷ 6 = ?",["26","24","28"],"26","","120÷6=20，36÷6=6，共26。")];
+  else if(t===2) bank=[
+   mq("2/8 和下面哪个分数相等？","Which fraction equals 2/8?","Welcher Bruch ist gleich 2/8?",["1/4","1/2","2/4"],"1/4",frac(2,8),"2/8的分子分母同时除以2，得到1/4。"),
+   mq("1/4 + 2/4 = ?","1/4 + 2/4 = ?","1/4 + 2/4 = ?",["3/4","3/8","1/2"],"3/4",frac(3,4),"同分母分数相加，分母不变，分子相加。")];
+  else if(t===3) bank=[
+   mq("长方形长 8 cm，宽 5 cm，周长是多少？","Rectangle 8 cm by 5 cm. Perimeter?","Rechteck 8 cm × 5 cm. Umfang?",["26 cm","40 cm","13 cm"],"26 cm","<div class='problemVisual'><div class='rect'>8 cm × 5 cm</div></div>","周长=(8+5)×2=26 cm。"),
+   mq("一个直角是多少度？","How many degrees is a right angle?","Wie viele Grad hat ein rechter Winkel?",["90°","45°","180°"],"90°","","直角=90°。")];
+  else if(t===4) bank=[
+   mq("学校买 6 箱练习册，每箱 24 本，平均分给 3 个班。每班多少本？","6 boxes of 24 workbooks are shared equally among 3 classes. How many per class?","6 Kisten mit je 24 Heften werden auf 3 Klassen verteilt. Wie viele pro Klasse?",["48","144","24"],"48",bars("6×24=144","÷3","每班?"),"先求总数6×24=144，再平均分：144÷3=48。"),
+   mq("Kevin 有 50 泰铢，买铅笔用 18 泰铢，又买橡皮用 12 泰铢。剩多少？","Kevin has 50 baht, spends 18 and 12. How much remains?","Kevin hat 50 Baht, gibt 18 und 12 aus. Wie viel bleibt?",["20","30","32"],"20",bars("50","18+12","剩余?"),"总花费=18+12=30；50-30=20。")];
+  else bank=[
+   mq("🔺+🔺=18，🔺+⬜=15，⬜+⭕=11。⭕是多少？","Triangle+triangle=18; triangle+square=15; square+circle=11. Circle?","Dreieck+Dreieck=18; Dreieck+Quadrat=15; Quadrat+Kreis=11. Kreis?",["5","6","4"],"5","<div class='problemVisual' style='font-size:30px'>🔺+🔺=18<br>🔺+⬜=15<br>⬜+⭕=11</div>","🔺=9；⬜=6；所以⭕=5。"),
+   mq("一个数乘 4 再加 7 得 35，这个数是多少？","A number times 4 plus 7 is 35. Find the number.","Eine Zahl mal 4 plus 7 ergibt 35.",["7","8","6"],"7","","逆推：35-7=28，28÷4=7。")];
+ } else if(g===4){
+  if(t===0) bank=[
+   mq("36 的因数中，下面哪一个正确？","Which is a factor of 36?","Welche Zahl ist ein Teiler von 36?",["9","7","5"],"9","","36÷9=4，没有余数。"),
+   mq("864 ÷ 24 = ?","864 ÷ 24 = ?","864 ÷ 24 = ?",["36","34","38"],"36","","24×36=864。")];
+  else if(t===1) bank=[
+   mq("2又1/4 写成假分数是多少？","Convert 2 1/4 to an improper fraction.","Wandle 2 1/4 in einen unechten Bruch um.",["9/4","8/4","7/4"],"9/4",frac(1,4),"2=8/4，再加1/4=9/4。"),
+   mq("3.75 + 1.6 = ?","3.75 + 1.6 = ?","3,75 + 1,6 = ?",["5.35","4.35","5.25"],"5.35","","小数点对齐：3.75+1.60=5.35。")];
+  else if(t===2) bank=[
+   mq("长 12 cm、宽 7 cm 的长方形面积是多少？","Area of a 12 cm by 7 cm rectangle?","Fläche eines Rechtecks 12 cm × 7 cm?",["84 cm²","38 cm²","19 cm²"],"84 cm²","<div class='problemVisual'><div class='rect'>12 × 7</div></div>","面积=长×宽=12×7=84。"),
+   mq("一条直线角是多少度？","How many degrees is a straight angle?","Wie viele Grad hat ein gestreckter Winkel?",["180°","90°","360°"],"180°","","平角=180°。")];
+  else if(t===3) bank=[
+   mq("21:30 是晚上几点半？","What time is 21:30 in 12-hour time?","Wie spät ist 21:30 im 12-Stunden-System?",["9:30 PM","8:30 PM","10:30 PM"],"9:30 PM","","21-12=9，所以是晚上9:30。"),
+   mq("折线图最适合表现什么？","What is a line graph especially useful for?","Wofür eignet sich ein Liniendiagramm besonders?",["随时间变化的趋势","物体的颜色","单个图形的周长"],"随时间变化的趋势","","折线图常用来观察数据随时间的变化。")];
+  else if(t===4) bank=[
+   mq("一辆车上午行 125.5 km，下午行 86.75 km。全天行多少千米？","A car travels 125.5 km then 86.75 km. Total?","Ein Auto fährt 125,5 km und 86,75 km. Gesamt?",["212.25","211.25","202.25"],"212.25",bars("125.5","86.75","总路程?"),"125.50+86.75=212.25 km。"),
+   mq("240 本书装箱，每箱 18 本。装满 13 箱后还剩多少本？","240 books; 18 per box. After filling 13 boxes, how many remain?","240 Bücher, 18 pro Kiste. Nach 13 vollen Kisten bleiben?",["6","8","4"],"6",bars("240","13×18","剩余?"),"13×18=234；240-234=6。")];
+  else bank=[
+   mq("一个数既是 6 的倍数又是 8 的倍数，下面最小的是？","Smallest number below that is a multiple of both 6 and 8?","Kleinste Zahl, die Vielfaches von 6 und 8 ist?",["24","12","18"],"24","","6和8的最小公倍数是24。"),
+   mq("□×5=△，△-8=27。□是多少？","Square×5=triangle; triangle−8=27. Square?","□×5=△; △−8=27. □?",["7","5","9"],"7","","△=35；□=35÷5=7。")];
+ } else if(g===5){
+  if(t===0) bank=[
+   mq("4.8 × 2.5 = ?","4.8 × 2.5 = ?","4,8 × 2,5 = ?",["12","10","14"],"12","","2.5=5/2，所以4.8×5÷2=24÷2=12。"),
+   mq("33.6 ÷ 4.2 = ?","33.6 ÷ 4.2 = ?","33,6 ÷ 4,2 = ?",["8","7","9"],"8","","同时扩大10倍：336÷42=8。")];
+  else if(t===1) bank=[
+   mq("80 的 25% 是多少？","What is 25% of 80?","Was sind 25% von 80?",["20","25","16"],"20",frac(1,4),"25%=1/4；80÷4=20。"),
+   mq("1/3 × 3/5 = ?","1/3 × 3/5 = ?","1/3 × 3/5 = ?",["1/5","3/8","3/15"],"1/5","","分子分母相乘后约分：3/15=1/5。")];
+  else if(t===2) bank=[
+   mq("三角形底 10 cm，高 6 cm，面积是多少？","Triangle base 10 cm, height 6 cm. Area?","Dreieck: Grundseite 10 cm, Höhe 6 cm. Fläche?",["30 cm²","60 cm²","16 cm²"],"30 cm²","","面积=底×高÷2=10×6÷2=30。"),
+   mq("长方体长5、宽4、高3，体积是多少？","Cuboid 5×4×3. Volume?","Quader 5×4×3. Volumen?",["60","20","12"],"60","","体积=5×4×3=60。")];
+  else if(t===3) bank=[
+   mq("红球与蓝球数量比为 3:2，共有 25 个球。红球多少个？","Red:blue = 3:2, total 25. How many red?","Rot:Blau=3:2, insgesamt 25. Wie viele rote?",["15","10","12"],"15",bars("红3份","蓝2份","共25"),"总份数5；每份25÷5=5；红球3×5=15。"),
+   mq("4 支笔 20 泰铢，每支笔的单位价格是多少？","4 pens cost 20 baht. Unit price?","4 Stifte kosten 20 Baht. Preis pro Stück?",["5泰铢","4泰铢","8泰铢"],"5泰铢","","20÷4=5。")];
+  else if(t===4) bank=[
+   mq("一件商品原价 400 泰铢，打九折后多少钱？","An item costs 400 baht. What is the price after a 10% discount?","400 Baht, 10% Rabatt. Neuer Preis?",["360","40","440"],"360",bars("原价400","优惠40","实付?"),"九折=原价的90%；400×0.9=360。"),
+   mq("一桶水有 18.5 L，用去 2/5。还剩多少升？","18.5 L of water; 2/5 is used. How much remains?","18,5 L Wasser; 2/5 verbraucht. Wie viel bleibt?",["11.1","7.4","10.5"],"11.1","","剩3/5；18.5×3/5=11.1。")];
+  else bank=[
+   mq("三个连续偶数的和是 42，中间的数是多少？","Three consecutive even numbers sum to 42. Middle number?","Drei aufeinanderfolgende gerade Zahlen ergeben 42. Mittlere Zahl?",["14","12","16"],"14","","连续且对称，中间数就是平均数：42÷3=14。"),
+   mq("A 是 B 的 3 倍，两数和 48。B 是多少？","A is 3 times B; sum 48. What is B?","A ist dreimal B; Summe 48. Wie groß ist B?",["12","16","9"],"12",bars("B","A=3B","48"),"共4份=48，所以1份B=12。")];
+ } else {
+  if(t===0) bank=[
+   mq("若 4x + 7 = 35，x = ?","If 4x + 7 = 35, x = ?","Wenn 4x + 7 = 35, x = ?",["7","8","6"],"7",bars("4x","7","35"),"35-7=28；28÷4=7。"),
+   mq("3a + 2，当 a=5 时等于多少？","Evaluate 3a+2 when a=5.","Berechne 3a+2 für a=5.",["17","15","13"],"17","","3×5+2=17。")];
+  else if(t===1) bank=[
+   mq("3/4 ÷ 1/2 = ?","3/4 ÷ 1/2 = ?","3/4 ÷ 1/2 = ?",["3/2","3/8","2/3"],"3/2",frac(3,4),"除以1/2等于乘2：3/4×2=3/2。"),
+   mq("价格先上涨20%，再下降20%，最终与原价相比？","Price rises 20%, then falls 20%. Compared with original?","Preis +20%, dann −20%. Im Vergleich zum Ursprung?",["低4%","相同","高4%"],"低4%","","设原价100：120×0.8=96，所以低4%。")];
+  else if(t===2) bank=[
+   mq("圆的半径为 5 cm，直径是多少？","Circle radius 5 cm. Diameter?","Kreisradius 5 cm. Durchmesser?",["10 cm","5 cm","25 cm"],"10 cm","<div class='problemVisual'><div class='circleShape'>r=5</div></div>","直径=2×半径=10 cm。"),
+   mq("半径为 3 cm 的圆，面积表达式是哪一个？","Circle radius 3 cm. Which expression gives its area?","Kreisradius 3 cm. Welcher Ausdruck ist die Fläche?",["9π","6π","3π"],"9π","","面积=πr²=π×3²=9π。")];
+  else if(t===3) bank=[
+   mq("汽车 3 小时行 180 km，平均速度是多少？","180 km in 3 hours. Average speed?","180 km in 3 Stunden. Durchschnittsgeschwindigkeit?",["60 km/h","90 km/h","540 km/h"],"60 km/h",bars("180 km","3 h","速度?"),"速度=距离÷时间=180÷3=60 km/h。"),
+   mq("以 72 km/h 行驶 2.5 小时，路程是多少？","At 72 km/h for 2.5 h, distance?","72 km/h für 2,5 h. Strecke?",["180 km","144 km","200 km"],"180 km","","距离=速度×时间=72×2.5=180 km。")];
+  else if(t===4) bank=[
+   mq("正方体有几个面？","How many faces does a cube have?","Wie viele Flächen hat ein Würfel?",["6","8","12"],"6","","正方体有6个正方形面。"),
+   mq("饼图中某部分占整个圆的 25%，对应圆心角多少度？","25% of a pie chart corresponds to what central angle?","25% eines Kreisdiagramms entsprechen welchem Winkel?",["90°","45°","120°"],"90°","","360°×25%=90°。")];
+  else bank=[
+   mq("一辆车前 2 小时每小时 60 km，后 3 小时每小时 80 km。全程平均速度是多少？","2 h at 60 km/h then 3 h at 80 km/h. Average speed?","2 h mit 60 km/h, dann 3 h mit 80 km/h. Durchschnitt?",["72 km/h","70 km/h","68 km/h"],"72 km/h",bars("120 km","240 km","5 h"),"总路程120+240=360；总时间5小时；360÷5=72。"),
+   mq("甲乙两数比 2:3，甲增加 10 后与乙相等。甲原来是多少？","A:B=2:3. After adding 10 to A, they are equal. Original A?","A:B=2:3. A+10=B. Wie groß war A?",["20","30","10"],"20",bars("甲2份","乙3份","差10"),"相差1份=10，所以甲2份=20。")];
+ }
+ return bank[k%bank.length]
+}
+
+
+const V22_MODULES={
+ G1:["数与数感","加减法","测量与时间","图形与规律","应用题","等量代换"],
+ G2:["数感与位值","乘法与除法","两步应用题","分数入门","钱币/时间/测量","等量代换"],
+ G3:["10,000以内数","乘除进阶","分数","几何与测量","应用题","数学思维/等量代换"],
+ G4:["大数与运算","分数与小数","几何","数据与时间","应用题","逻辑与等量代换"],
+ G5:["整数/小数运算","分数/百分数","面积与体积","比与Rate","应用题","代数前思维"],
+ G6:["代数思维","分数/比/百分数","圆与复合图形","速度","数据与立体图形","综合建模"]
+};
+function v22SetLevel(lv){
+ if(state.subject!=="数学") return;
+ state.level=lv; mathTopic=0; localStorage.setItem(MATH_TOPIC_KEY,0);
+ state.unit=V22_MODULES[lv][0]; renderLevelUnit(); renderMathHub(); renderV22Nav();
+ // Critical fix: regenerate immediately instead of leaving old question on screen.
+ if(document.querySelector("#challenge") && document.querySelector("#challenge").innerHTML.trim()) startQuest();
+}
+function v22SetModule(i){
+ mathTopic=i;localStorage.setItem(MATH_TOPIC_KEY,i);
+ state.unit=V22_MODULES[state.level][i];renderLevelUnit();renderV22Nav();
+ startQuest();
+}
+function renderV22Nav(){
+ const n=document.querySelector("#v22Nav"); if(!n)return;
+ if(state.subject!=="数学"){n.style.display="none";return}
+ n.style.display="block";
+ document.querySelector("#v22Title").textContent=`${state.level} 数学 · 选择课程模块`;
+ document.querySelector("#v22Modules").innerHTML=V22_MODULES[state.level].map((x,i)=>`<button class="v22Module ${i===mathTopic?"on":""}" onclick="v22SetModule(${i})">${x}</button>`).join("");
+}
+function numberSenseV22(i,g){
+ let k=i%6;
+ if(g<=1){
+  const bank=[
+   mq("看十格图：已经有 6 个点，还差几个到 10？","Look at the ten-frame: 6 dots. How many more to make 10?","Sieh auf das Zehnerfeld: 6 Punkte. Wie viele fehlen bis 10?",["4","3","5"],"4",`<div class="problemVisual"><div class="nsTen">${Array.from({length:10},(_,j)=>`<div class="nsCell">${j<6?"●":""}</div>`).join("")}</div></div>`,"十格一共有10格。已有6格，所以10-6=4。"),
+   mq("跳着数：2，4，6，8，下一步是多少？","Skip count: 2,4,6,8. What comes next?","Zähle in Zweierschritten: 2,4,6,8. Was kommt?",["10","9","12"],"10",`<div class="problemVisual"><div class="nsLine"><span class="nsBox">2</span>→<span class="nsBox">4</span>→<span class="nsBox">6</span>→<span class="nsBox">8</span>→<span class="nsBox">?</span></div></div>`,"每次增加2，所以8+2=10。"),
+   mq("7 可以分成 5 和几？","7 can be split into 5 and what?","7 kann in 5 und welche Zahl zerlegt werden?",["2","3","1"],"2",`<div class="problemVisual"><div class="nsLine"><span class="nsBox">7</span>=<span class="nsBox">5</span>+<span class="nsBox">?</span></div></div>`,"7-5=2，这是 Number Bond。"),
+   mq("哪一个数最大？","Which number is greatest?","Welche Zahl ist am größten?",["18","15","12"],"18",`<div class="problemVisual"><div class="nsLine"><span class="nsBox">12</span><span class="nsBox">18</span><span class="nsBox">15</span></div></div>`,"比较十位相同/不同，再比较个位。18最大。"),
+   mq("找规律：1，3，5，7，__","Find the pattern: 1,3,5,7,__","Finde das Muster: 1,3,5,7,__",["9","8","10"],"9","","每次加2。"),
+   mq("方格中每一行都要凑成 10。8 + □ = 10，□是多少？","Each row must total 10. 8 + □ = 10.","Jede Reihe soll 10 ergeben. 8 + □ = 10.",["2","1","3"],"2",`<div class="problemVisual"><div class="addSquare"><span>8</span><span>+</span><span>?</span><span>6</span><span>+</span><span>4</span><span>7</span><span>+</span><span>3</span></div></div>`,"8到10还差2。")
+  ]; return bank[k];
+ }
+ // G2/G3 number sense becomes place value, number line, skip counting, missing-number reasoning.
+ const bank=[
+  mq("在数轴上，390 后面每次增加 10：390，400，410，__。","On the number line add 10 each time: 390,400,410,__.","Auf dem Zahlenstrahl immer +10: 390,400,410,__.",["420","411","430"],"420",`<div class="problemVisual"><div class="nsLine"><span class="nsBox">390</span>→<span class="nsBox">400</span>→<span class="nsBox">410</span>→<span class="nsBox">?</span></div></div>`,"每一步+10，所以410+10=420。"),
+  mq("506 由几个百、几个十、几个一组成？","How many hundreds, tens and ones are in 506?","Aus wie vielen Hundertern, Zehnern und Einern besteht 506?",["5百0十6一","5百6十0一","50百6一"],"5百0十6一","","506=500+0+6。"),
+  mq("□ + 35 = 80，□是多少？","□ + 35 = 80. Find □.","□ + 35 = 80. Finde □.",["45","55","35"],"45",`<div class="problemVisual"><div class="nsLine"><span class="nsBox">?</span>+<span class="nsBox">35</span>=<span class="nsBox">80</span></div></div>`,"用逆运算：80-35=45。"),
+  mq("从 240 开始，每次减 20。第三步到多少？","Start at 240 and subtract 20 each step. Where are you after 3 steps?","Starte bei 240 und ziehe dreimal 20 ab.",["180","200","160"],"180","","240→220→200→180。"),
+  mq("下面哪个数最接近 500？","Which number is closest to 500?","Welche Zahl liegt 500 am nächsten?",["497","482","516"],"497","","497与500只差3。"),
+  mq("寻找隐藏算式：哪一个等式正确？","Find the hidden equation. Which is correct?","Finde die versteckte Gleichung. Welche stimmt?",["7+5=12","8+7=14","9-3=5"],"7+5=12",`<div class="problemVisual"><div class="searchGrid">${[7,5,12,4,8,7,14,6,9,3,5,2,1,6,7,13].map(x=>`<span>${x}</span>`).join("")}</div><small>Math Problem Search</small></div>`,"检查每个算式，7+5=12成立。")
+ ]; return bank[k];
+}
+function substitutionV22(i,g){
+ let k=i%6, bank;
+ if(g<=1) bank=[
+  mq("🍎 + 🍎 = 8，一个🍎是多少？","🍎 + 🍎 = 8. What is one apple?","🍎 + 🍎 = 8. Wie viel ist ein Apfel?",["4","8","2"],"4",`<div class="problemVisual subEq">🍎 + 🍎 = 8<br>🍎 = ?</div>`,"两个相同苹果合计8，所以8÷2=4。"),
+  mq("⚽ + ⚽ = 10，⚽ + 🐰 = 8。🐰是多少？","⚽+⚽=10; ⚽+🐰=8. Find 🐰.","⚽+⚽=10; ⚽+🐰=8. Finde 🐰.",["3","5","2"],"3",`<div class="problemVisual subEq">⚽+⚽=10<br>⚽+🐰=8<br>🐰=?</div>`,"先求⚽=5，再算5+🐰=8，所以🐰=3。")
+ ];
+ else if(g<=3) bank=[
+  mq("⭐+⭐=14，⭐+🌙=11。🌙是多少？","⭐+⭐=14; ⭐+🌙=11. Find 🌙.","⭐+⭐=14; ⭐+🌙=11. Finde 🌙.",["4","7","3"],"4",`<div class="problemVisual subEq">⭐ + ⭐ = 14<br>⭐ + 🌙 = 11<br>🌙 = ?</div>`,"第一式得到⭐=7；代入第二式，🌙=11-7=4。"),
+  mq("🔺+🔺=18，🔺+⬜=15，⬜+⭕=11。⭕是多少？","Solve the substitution chain.","Löse die Ersetzungskette.",["5","6","4"],"5",`<div class="problemVisual subEq">🔺+🔺=18<br>🔺+⬜=15<br>⬜+⭕=11<br>⭕=?</div>`,"🔺=9；⬜=6；⭕=5。"),
+  mq("🍓+🍓+🍓=21，🍓+🍌=12，🍌+🍇=9。🍇是多少？","Solve for the grape.","Finde den Wert der Traube.",["4","3","5"],"4",`<div class="problemVisual subEq">🍓+🍓+🍓=21<br>🍓+🍌=12<br>🍌+🍇=9</div>`,"🍓=7；🍌=5；🍇=4。")
+ ];
+ else bank=[
+  mq("□+□=24，□+△=19，△+○=13。○是多少？","□+□=24; □+△=19; △+○=13. Find ○.","□+□=24; □+△=19; △+○=13. Finde ○.",["6","7","5"],"6",`<div class="problemVisual subEq">□+□=24<br>□+△=19<br>△+○=13</div>`,"□=12；△=7；○=6。"),
+  mq("3x + 5 = 26，x是多少？","3x+5=26. Find x.","3x+5=26. Finde x.",["7","9","6"],"7",`<div class="problemVisual subEq">3x + 5 = 26</div>`,"先减5：3x=21；再除以3：x=7。"),
+  mq("A=2B，A+B=36。B是多少？","A=2B and A+B=36. Find B.","A=2B und A+B=36. Finde B.",["12","18","9"],"12",`<div class="problemVisual subEq">A = 2B<br>A + B = 36</div>`,"代入后2B+B=36，所以3B=36，B=12。")
+ ];
+ return bank[k%bank.length];
+}
+// Override the v2.1 math router with true topic-specific number sense/substitution.
+const _mathV21=mathV21;
+mathV21=function(i){
+ const g=+state.level.slice(1);
+ if((g<=3 && mathTopic===0)) return numberSenseV22(i,g);
+ if(mathTopic===5 && g<=4) return substitutionV22(i,g);
+ return _mathV21(i);
+};
+
+function makeQ(i){
+ if(state.subject==="数学" && state.level.startsWith("G")) return mathV21(i);
+ const g=state.level.startsWith("G")?+state.level.slice(1):1;
+ let cn,en,de,opts,ans,a,b,q;
+ if(state.subject==="数学"){
+   if(state.unit==="单位换算"){
+     const pools={
+       1:[["1 米 = ? 厘米","1 meter = ? centimeters","1 Meter = ? Zentimeter",["100","10","1000"],"100"],["1 千克 = ? 克","1 kilogram = ? grams","1 Kilogramm = ? Gramm",["1000","100","10"],"1000"]],
+       2:[["3 米 = ? 厘米","3 meters = ? centimeters","3 Meter = ? Zentimeter",["300","30","3000"],"300"],["2 千克 = ? 克","2 kilograms = ? grams","2 Kilogramm = ? Gramm",["2000","200","20"],"2000"]],
+       3:[["250 厘米 = ? 米 ? 厘米","250 cm = ? m ? cm","250 cm = ? m ? cm",["2米50厘米","25米","2米5厘米"],"2米50厘米"],["3 千克 500 克 = ? 克","3 kg 500 g = ? grams","3 kg 500 g = ? Gramm",["3500","3050","3005"],"3500"]],
+       4:[["2.5 千米 = ? 米","2.5 km = ? meters","2,5 km = ? Meter",["2500","250","25000"],"2500"],["3.2 升 = ? 毫升","3.2 L = ? mL","3,2 L = ? ml",["3200","320","32"],"3200"]],
+       5:[["0.75 平方米 = ? 平方厘米","0.75 m² = ? cm²","0,75 m² = ? cm²",["7500","750","75000"],"7500"],["2.4 吨 = ? 千克","2.4 tonnes = ? kg","2,4 Tonnen = ? kg",["2400","240","24000"],"2400"]],
+       6:[["1.25 立方米 = ? 立方分米","1.25 m³ = ? dm³","1,25 m³ = ? dm³",["1250","125","12500"],"1250"],["72 km/h = ? m/s","72 km/h = ? m/s","72 km/h = ? m/s",["20","12","25"],"20"]]
+     };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+   } else if(state.unit==="奥数"){
+     const pools={
+      1:[["小明有 8 颗糖，又得到 5 颗，送出 3 颗，还剩多少颗？","Ming has 8 candies, gets 5 more, then gives away 3. How many remain?","Ming hat 8 Bonbons, bekommt 5 dazu und gibt 3 weg. Wie viele bleiben?",["10","13","16"],"10"]],
+      2:[["一排有 6 人，4 排共有多少人？再来 3 人，一共多少人？","There are 6 people in each of 4 rows, then 3 more join. Total?","4 Reihen mit je 6 Personen, dann kommen 3 dazu. Insgesamt?",["27","24","21"],"27"]],
+      3:[["鸡和兔共有 8 只，共有 22 条腿。兔有几只？","There are 8 chickens and rabbits with 22 legs total. How many rabbits?","8 Hühner und Kaninchen haben zusammen 22 Beine. Wie viele Kaninchen?",["3","4","5"],"3"]],
+      4:[["一个数乘 5 再减 7 等于 28，这个数是多少？","A number times 5 minus 7 equals 28. What is the number?","Eine Zahl mal 5 minus 7 ergibt 28. Welche Zahl?",["7","5","9"],"7"]],
+      5:[["甲数是乙数的 3 倍，两数和为 48，乙数是多少？","A is 3 times B and their sum is 48. What is B?","A ist dreimal B, zusammen sind sie 48. Wie groß ist B?",["12","16","9"],"12"]],
+      6:[["某商品先涨价 20%，再降价 20%。最终价格与原价相比怎样？","A price rises 20% then falls 20%. Compared with the original price?","Ein Preis steigt um 20% und fällt danach um 20%. Vergleich zum Ursprungspreis?",["低4%","相同","高4%"],"低4%"]]
+     };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+   } else {
+     if(g===1){a=5+i%12;b=2+i%7;ans=a+b;cn=`${a} + ${b} = ?`}
+     else if(g===2){a=20+i*3;b=7+i;ans=a-b;cn=`${a} - ${b} = ?`}
+     else if(g===3){a=4+i%7;b=3+i%6;ans=a*b;cn=`${a} × ${b} = ?`}
+     else if(g===4){a=120+i*17;b=3+i%5;ans=a*b;cn=`${a} × ${b} = ?`}
+     else if(g===5){a=12+i;b=4+i%5;ans=(a*b)+15;cn=`${a} × ${b} + 15 = ?`}
+     else {a=24+i*2;b=6;ans=(a/b)*5;cn=`(${a} ÷ ${b}) × 5 = ?`}
+     en=de=cn;opts=[String(ans),String(ans+(g+1)),String(Math.max(0,ans-(g+2)))];ans=String(ans);
+   }
+ } else if(state.subject==="语文"){
+   const pools={
+    1:[
+     ["下面哪个字读“shān”？","Which character is pronounced shān?","Welches Zeichen wird shān ausgesprochen?",["山","水","火"],"山"],
+     ["“大”的反义词是哪一个？","What is the opposite of 大 (big)?","Was ist das Gegenteil von 大 (groß)?",["小","高","多"],"小"],
+     ["“妈妈___我去公园。”应填什么？","Complete: 妈妈 ___ 我去公园。","Ergänze: 妈妈 ___ 我去公园。",["带","戴","代"],"带"]
+    ],
+    2:[
+     ["“开心”的近义词是哪一个？","Which word is closest to 开心 (happy)?","Welches Wort bedeutet ungefähr 开心 (glücklich)?",["高兴","伤心","害怕"],"高兴"],
+     ["“小鸟在天空中飞。”这句话中的动物是什么？","What animal appears in the sentence?","Welches Tier kommt im Satz vor?",["小鸟","天空","飞机"],"小鸟"],
+     ["选择正确量词：一___书。","Choose the correct measure word for a book.","Wähle das richtige Zählwort für ein Buch.",["本","只","条"],"本"]
+    ],
+    3:[
+     ["“安静”的反义词是哪一个？","Which word is the opposite of 安静 (quiet)?","Was ist das Gegenteil von 安静 (ruhig)?",["热闹","整齐","认真"],"热闹"],
+     ["“因为下雨，所以比赛取消。”比赛取消的原因是什么？","Why was the match cancelled?","Warum wurde das Spiel abgesagt?",["下雨","比赛结束","天气炎热"],"下雨"],
+     ["“他跑得像风一样快”使用了什么修辞？","What figure of speech is used in 'He runs as fast as the wind'?","Welches Stilmittel wird bei 'Er rennt so schnell wie der Wind' verwendet?",["比喻","拟人","排比"],"比喻"]
+    ],
+    4:[
+     ["“坚持不懈”最接近下面哪个意思？","What best describes 坚持不懈?","Was bedeutet 坚持不懈 am ehesten?",["一直努力不放弃","做事很快","随意改变目标"],"一直努力不放弃"],
+     ["“虽然天气很冷，但是他仍然坚持晨跑。”这句话是什么关系？","What relationship connects the two clauses?","Welche Beziehung besteht zwischen den Satzteilen?",["转折","因果","递进"],"转折"],
+     ["“教室里安静得连一根针掉在地上都能听见。”主要使用什么手法？","What technique is mainly used in this sentence?","Welches Stilmittel wird hauptsächlich verwendet?",["夸张","排比","反问"],"夸张"]
+    ],
+    5:[
+     ["“临渊羡鱼，不如退而结网”主要说明什么？","What is the main idea of this saying?","Was ist die Kernaussage dieses Sprichworts?",["行动比空想重要","捕鱼很困难","应该离开河边"],"行动比空想重要"],
+     ["“书籍是人类进步的阶梯。”使用了什么修辞？","What figure of speech is used here?","Welches Stilmittel wird hier verwendet?",["比喻","反问","排比"],"比喻"],
+     ["阅读文章时，要概括中心思想，最重要的是关注什么？","When identifying a text's main idea, what matters most?","Was ist beim Bestimmen der Hauptaussage am wichtigsten?",["主要事件和作者表达的观点","每个生字的笔画","文章有多少行"],"主要事件和作者表达的观点"]
+    ],
+    6:[
+     ["“纸上得来终觉浅，绝知此事要躬行”强调什么？","What does this line emphasize?","Was betont dieser Vers?",["实践的重要性","读书没有用","知识越少越好"],"实践的重要性"],
+     ["“即使困难重重，我们也不能轻言放弃。”其中“即使……也……”是什么关系？","What relationship does 即使…也… express?","Welche Beziehung drückt 即使…也… aus?",["假设让步","因果","并列"],"假设让步"],
+     ["文章没有直接说明人物紧张，却写“他的手心全是汗，反复看着时钟”。这属于什么描写作用？","The text never says he is nervous, but describes sweaty palms and repeatedly checking the clock. What does this do?","Der Text sagt nicht direkt, dass er nervös ist, sondern beschreibt Schweiß und Blicke auf die Uhr. Was bewirkt das?",["通过细节表现心理状态","说明天气炎热","介绍时钟"],"通过细节表现心理状态"]
+    ]
+   };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+ } else if(state.subject==="英语"){
+   const pools={
+    1:[["Choose the animal.",["cat","book","red"],"cat"],["Choose the color.",["blue","run","dog"],"blue"]],
+    2:[['Complete: "She ___ my friend."',["is","are","am"],"is"],["Which is the plural of 'book'?",["books","bookes","book"],"books"]],
+    3:[['Complete: "He ___ to school every day."',["goes","go","going"],"goes"],["Choose the past tense of 'play'.",["played","plays","playing"],"played"]],
+    4:[['Complete: "I have lived here ___ 2024."',["since","for","at"],"since"],["Which sentence is correct?",["She has finished her homework.","She have finished her homework.","She finished has homework."],"She has finished her homework."]],
+    5:[['If it rains tomorrow, we ___ at home.',["will stay","stayed","stays"],"will stay"],["Choose the relative pronoun: The boy ___ won is my friend.",["who","which","where"],"who"]],
+    6:[['By the time we arrived, the film ___.',["had started","has started","starts"],"had started"],["Choose the best connector: ___ he was tired, he finished the work.",["Although","Because of","Unless"],"Although"]]
+   };q=pools[g][i%pools[g].length];cn="英语练习："+q[0];en=q[0];de="Englischübung: "+q[0];opts=q[1];ans=q[2];
+ } else if(state.subject==="科学"){
+   const pools={
+    1:[["植物生长通常需要什么？","What do plants usually need to grow?","Was brauchen Pflanzen normalerweise zum Wachsen?",["水和阳光","塑料","玻璃"],"水和阳光"]],
+    2:[["冰受热后通常会发生什么？","What usually happens when ice is heated?","Was passiert normalerweise, wenn Eis erwärmt wird?",["融化","结冰","消失成石头"],"融化"]],
+    3:[["水从液态变成水蒸气的过程叫做什么？","What is liquid water changing into water vapor called?","Wie heißt der Übergang von Wasser zu Wasserdampf?",["蒸发","凝固","沉淀"],"蒸发"]],
+    4:[["植物的叶片进行光合作用时主要吸收哪种气体？","Which gas do leaves mainly take in during photosynthesis?","Welches Gas nehmen Blätter hauptsächlich bei der Fotosynthese auf?",["二氧化碳","氧气","氮气"],"二氧化碳"]],
+    5:[["在简单电路中，如果开关断开，灯泡为什么不亮？","Why does a bulb go out when a switch opens a simple circuit?","Warum leuchtet eine Lampe nicht, wenn der Schalter den Stromkreis öffnet?",["电路不闭合，电流不能连续通过","电池立即没有电","灯泡质量变小"],"电路不闭合，电流不能连续通过"]],
+    6:[["月相变化的主要原因是什么？","What mainly causes the phases of the Moon?","Was verursacht hauptsächlich die Mondphasen?",["月球绕地球运动时我们看到的受光部分不同","月球自身周期性变亮变暗","地球每天遮住月球"],"月球绕地球运动时我们看到的受光部分不同"]]
+   };q=pools[g][i%pools[g].length];[cn,en,de,opts,ans]=q;
+ } else if(state.subject==="德语"){
+   const lvl=state.level;
+   const pools={
+    "A1.1":[["Wie heißt du?",["Ich heiße Harry.","Ich bin acht Uhr.","Guten Appetit."],"Ich heiße Harry."],["Ich ___ acht Jahre alt.",["bin","bist","ist"],"bin"]],
+    "A1.2":[["Wir ___ heute Fußball.",["spielen","spielt","spielst"],"spielen"],["Ich gehe ___ Schule.",["zur","der","den"],"zur"]],
+    "A2.1":[["Gestern ___ ich meine Hausaufgaben gemacht.",["habe","bin","werde"],"habe"],["Ich bleibe zu Hause, ___ ich krank bin.",["weil","aber","oder"],"weil"]],
+    "A2.2":[["Wenn ich mehr Zeit hätte, ___ ich öfter lesen.",["würde","werde","bin"],"würde"],["Das ist der Mann, ___ mir geholfen hat.",["der","den","dem"],"der"]]
+   };q=pools[lvl][i%pools[lvl].length];cn="德语练习："+q[0];en="German exercise: "+q[0];de=q[0];opts=q[1];ans=q[2];
+ } else {
+   const pools={
+    1:["观察一株植物时，哪种做法最好？","What is best when observing a plant?","Was ist bei der Beobachtung einer Pflanze am besten?",["记录看到的变化","随便猜","不做记录"],"记录看到的变化"],
+    3:["要比较两种纸巾的吸水能力，怎样做更公平？","How can you fairly compare two paper towels' absorbency?","Wie vergleicht man fair die Saugfähigkeit zweier Papiertücher?",["使用相同大小纸巾和相同水量","一种用很多水","只试一次且条件不同"],"使用相同大小纸巾和相同水量"],
+    6:["实验结果与假设不一致时，科学上更合理的做法是什么？","If results disagree with a hypothesis, what is the more scientific response?","Was ist wissenschaftlich sinnvoll, wenn Ergebnisse der Hypothese widersprechen?",["检查方法和证据并修正假设","修改数据使其符合假设","忽略结果"],"检查方法和证据并修正假设"]
+   };q=pools[g>=5?6:g>=3?3:1];[cn,en,de,opts,ans]=q;
+ }
+ return {cn,en,de,opts:shuffle([...opts].map(String)),ans:String(ans)}
+}
+
+
+const MATH_V2={
+G1:[["🔢 数与数感","10/20/100以内数、大小比较、数序、十格图","ten"],["➕ 加减法","数的组成、10/20以内及100以内基础加减","ten"],["📏 测量与时间","长度比较、整点/半点、生活测量","shape"],["🔷 图形与规律","二维/三维图形、位置、重复规律","shape"],["🧩 应用题","一步加减、部分—整体、看图解决问题","bar"],["🧠 数学思维","数感、跳数、等量代换★","game"]],
+G2:[["🔢 1000以内的数","位值、数序、比较、组成","ten"],["✖️ 乘法与除法","2/3/4/5/10乘法表、平均分","array"],["🧩 两步应用题","Part-Whole、比较、条形模型","bar"],["🍕 分数入门","整体的一部分、简单分数","fraction"],["🕒 钱币/时间/测量","钱币、质量、容量、时间","shape"],["🧠 数学思维","余数、数列、等量代换★–★★","game"]],
+G3:[["🔢 10,000以内数","位值、比较、四位数加减","ten"],["✖️ 乘除进阶","6–9乘法表、多位数乘除","array"],["🍕 分数","等值分数、分数加减","fraction"],["📐 几何与测量","角、平行/垂直、面积、周长","shape"],["🧩 应用题","四则两步题、钱币、时间","bar"],["🧠 数学思维","多步推理、等量代换★★","game"]],
+G4:[["🔢 大数与运算","100,000及更大数、因数倍数、多位数乘除","ten"],["🍕 分数与小数","混合数、假分数、小数四则","fraction"],["📐 几何","角度、对称、复合图形面积与周长","shape"],["📊 数据与时间","表格、折线图、24小时制","shape"],["🧩 应用题","多步骤小数/整数问题、Bar Model","bar"],["🧠 数学思维","因数倍数、逻辑、等量代换★★–★★★","game"]],
+G5:[["🔢 整数/小数运算","大数、小数乘除及运算律","ten"],["🍕 分数/百分数","分数乘法、百分数、平均数","fraction"],["📐 面积与体积","三角形面积、长方体/正方体体积","shape"],["⚖️ 比与Rate","比、单位率、数量关系","bar"],["🧩 应用题","分数、小数、百分数综合应用","bar"],["🧠 数学思维","多条件问题、逆向思考","game"]],
+G6:[["🔤 代数思维","未知数、代数表达式、数量关系","bar"],["🍕 分数/比/百分数","分数除法、比、百分数变化","fraction"],["⭕ 圆与复合图形","半径、直径、周长、面积","circle"],["🚗 速度","速度—距离—时间、平均速度","bar"],["📊 数据与立体图形","饼图、体积、展开图","shape"],["🧠 综合应用","多步骤建模、逻辑与奥数挑战","game"]]};
+function renderMathHub(){let hub=document.querySelector("#mathHub");if(!hub)return;hub.classList.toggle("hidden",state.subject!=="数学");if(state.subject!=="数学")return;let lv=state.level.startsWith("G")?state.level:"G1";document.querySelector("#mathTabs").innerHTML=["G1","G2","G3","G4","G5","G6"].map(x=>`<button class="mathTab ${x===lv?"on":""}" onclick="state.level='${x}';renderMathHub();renderLevelUnit()">${x}</button>`).join("");let grid=document.querySelector("#lessonGrid");grid.innerHTML="";MATH_V2[lv].forEach((x,i)=>{let d=document.createElement("div");d.className="lessonCard";d.innerHTML=`<b>${x[0]}</b><small>${x[1]}</small><span class="sourceTag">${i===5?"思维拓展":"课程知识点"}</span>`;d.onclick=()=>showMathLesson(lv,i);grid.appendChild(d)});document.querySelector("#visualLesson").classList.remove("show")}
+function showMathLesson(lv,i){let x=MATH_V2[lv][i],box=document.querySelector("#visualLesson"),t=x[2],h=`<h3>${x[0]} · ${lv}</h3><p>${x[1]}</p>`;if(t==="ten")h+=`<div class="tenframe">${Array.from({length:10},(_,j)=>`<div class="cell">${j<7?'<div class="dot"></div>':''}</div>`).join("")}</div><p style="text-align:center">先看见数量与位值，再进入符号和计算。</p>`;else if(t==="bar")h+=`<div class="barwrap"><div class="barseg" style="flex:3">已知 A</div><div class="barseg" style="flex:2">已知 B</div><div class="barseg" style="flex:1">?</div></div><p><b>Bar Model：</b>把文字题转换成数量关系：已知 → 未知 → 列式 → 验算。</p>`;else if(t==="fraction")h+=`<div class="shapeStage"><div class="fracCircle"></div></div><p style="text-align:center">把分数变成看得见的“整体与部分”。</p>`;else if(t==="circle")h+=`<div class="shapeStage"><div class="circleShape">半径 r</div></div><p style="text-align:center">动态理解半径、直径、周长与面积。</p>`;else if(t==="array")h+=`<div style="font-size:28px;line-height:1.7;text-align:center">● ● ● ●<br>● ● ● ●<br>● ● ● ●</div><p style="text-align:center">3 行 × 4 个 = 12，用阵列理解乘法与除法。</p>`;else if(t==="game")h+=`<div class="mathGame"><b>🎮 数学思维</b><div class="gameGrid">${[2,5,3,4,1,6,7,8,9].map(n=>`<div class="gameCell">${n}</div>`).join("")}</div><p>数感、Addition Squares、Math Problem Search、等量代换与变式题。</p></div>`;else h+=`<div class="shapeStage"><div class="rect">长 × 宽</div><div class="circleShape">图形</div></div><p style="text-align:center">图形题优先展示形状、边、角与尺寸。</p>`;h+=`<p><button class="next" style="display:inline-block" onclick="startMathPractice('${lv}',${i})">▶ 开始这个知识点练习</button></p>`;box.innerHTML=h;box.classList.add("show");box.scrollIntoView({behavior:"smooth",block:"nearest"})}
+function startMathPractice(lv,i){state.subject="数学";state.level=lv;v22SetModule(i)}
+
+let wrongCount=0;
+function speakText(text,lang){
+ if(!("speechSynthesis" in window)){alert("当前浏览器不支持语音朗读。");return}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.82;u.pitch=1;
+ const voices=speechSynthesis.getVoices();
+ const pref=voices.find(v=>v.lang.toLowerCase().startsWith(lang.slice(0,2).toLowerCase()));
+ if(pref)u.voice=pref;speechSynthesis.speak(u)
+}
+function speakQuestion(lang){
+ const q=state.questions[state.index];if(!q)return;
+ if(lang==="zh")speakText(q.cn,"zh-CN");
+ if(lang==="en")speakText(q.en,"en-US");
+ if(lang==="de")speakText(q.de,"de-DE")
+}
+function explanationFor(q){
+ let steps=[],text="";
+ if(state.subject==="数学"){
+   let nums=(q.cn.match(/\d+(?:\.\d+)?/g)||[]);
+   steps=["🔢 先找已知条件","➡️ 确定要用的运算","🧮 分步骤计算","✅ 再检查答案"];
+   text=q.explain?`${q.explain} 正确答案是「${q.ans}」。看完后再自己重新做一次。`:`先找已知条件和未知量，再决定运算。正确答案是「${q.ans}」。`;
+ }else if(state.subject==="语文"){
+   steps=["📖 再读题目","🔍 找关键词","💭 比较每个选项","✅ 选最符合题意的答案"];
+   text=`这道题重点不是猜答案，而是找题目中的关键词和句子关系。正确答案是「${q.ans}」。想一想：其他选项为什么不符合题意？`;
+ }else if(state.subject==="英语"){
+   steps=["👀 Read the whole sentence","🔎 Find the grammar clue","🧩 Try each choice","✅ Read it again"];
+   text=`先完整读一遍句子，再找时态、主语或关键词。正确答案是 “${q.ans}”。把正确选项放回原句，再朗读一次。`;
+ }else if(state.subject==="德语"){
+   steps=["👀 Satz lesen","🔎 Signalwort finden","🧩 Antworten vergleichen","✅ Satz noch einmal lesen"];
+   text=`Lies zuerst den ganzen Satz und suche nach dem grammatischen Hinweis. Die richtige Antwort ist „${q.ans}“. Lies danach den vollständigen Satz noch einmal.`;
+ }else{
+   steps=["🔬 读清问题","🧠 回忆科学概念","⚖️ 比较三个选项","✅ 用证据确认"];
+   text=`先判断题目在问哪个科学概念，再排除明显不符合事实的选项。正确答案是「${q.ans}」。`;
+ }
+ return {steps,text}
+}
+function showExplanation(){
+ const q=state.questions[state.index],box=document.querySelector("#teachbox"),stage=document.querySelector("#animStage"),t=document.querySelector("#teachText");
+ const e=explanationFor(q);stage.innerHTML="";
+ e.steps.forEach((x,i)=>{let d=document.createElement("div");d.className="anim";d.style.animationDelay=(i*.55)+"s";d.textContent=x;stage.appendChild(d)});
+ t.textContent=e.text;box.classList.add("show");
+}
+
+function startQuest(){state.index=0;state.score=0;state.answered=false;state.questions=Array.from({length:10},(_,i)=>makeQ(i));renderQ()}
+function renderQ(){wrongCount=0;let q=state.questions[state.index],c=document.querySelector("#challenge");c.innerHTML=`<div class="qnum">${esc(state.subject)} · ${esc(state.level)} · ${esc(state.unit)}</div><div class="question">${tri(q.cn,q.en,q.de)}</div>${q.visual||""}<div class="v21tag">${state.subject==="数学"?"知识点专项练习 · "+state.level:""}</div>
+<div class="qtools"><button class="speakBtn" onclick="speakQuestion('zh')">🔊 中文读题</button><button class="speakBtn" onclick="speakQuestion('en')">🔊 English</button><button class="speakBtn" onclick="speakQuestion('de')">🔊 Deutsch</button><button class="explainBtn" id="explainBtn" onclick="showExplanation()">🎬 动画讲解</button></div>
+<div class="choices" id="choices"></div><div class="feedback" id="feedback"></div><div class="teachbox" id="teachbox"><div class="animStage" id="animStage"></div><div class="teachText" id="teachText"></div></div><div class="actions"><button class="next" id="next">下一题 →</button></div>`;q.opts.forEach(o=>{let b=document.createElement("button");b.className="choice";b.textContent=o;b.onclick=()=>answer(b,o,q);document.querySelector("#choices").appendChild(b)});document.querySelector("#next").onclick=nextQ;updateMeta()}
+function answer(btn,o,q){if(state.answered)return;recordAttempt(q,o,String(o)===q.ans);if(String(o)===q.ans){state.answered=true;state.score++;stars++;setNum("stars",stars);document.querySelector("#stars").textContent=stars;btn.classList.add("good");[...document.querySelector("#choices").children].forEach(x=>x.disabled=true);let f=document.querySelector("#feedback");f.textContent="✅ 正确！+1 ⭐";f.className="feedback ok";document.querySelector("#next").style.display="inline-block";updateMeta()}else{wrongCount++;btn.classList.add("bad");btn.disabled=true;let f=document.querySelector("#feedback");f.textContent=wrongCount===1?"再想一想。需要帮助可以点「动画讲解」。":"这道题有点难，看看动画讲解再试一次。";f.className="feedback no";let eb=document.querySelector("#explainBtn");if(eb)eb.style.display="inline-block"}}
+function nextQ(){if(!state.answered)return;state.index++;if(state.index>=10)finish();else{state.answered=false;renderQ()}}
+function finish(){recordSession();clears++;setNum("clears",clears);document.querySelector("#clears").textContent=clears;let pct=state.score*10;document.querySelector("#challenge").innerHTML=`<div style="text-align:center;padding:24px"><div style="font-size:48px">${pct>=80?"🏆":"🌟"}</div><h3>${learner} 本关完成！</h3><p><b>${state.score} / 10</b> 正确 · 正确率 ${pct}%</p><button class="next" style="display:inline-block" onclick="startQuest()">再挑战一次</button></div>`;document.querySelector("#heroText").textContent=`${learner} 刚完成 ${state.subject} ${state.level}，正确率 ${pct}%。`}
+function updateMeta(){let done=state.index+(state.answered?1:0);document.querySelector("#countText").textContent=`${Math.min(state.index+1,10)} / 10`;document.querySelector("#scoreText").textContent=`得分 ${state.score}`;document.querySelector("#qbar").style.width=(done/10*100)+"%";document.querySelector("#bar").style.width=Math.min(100,10+stars%91)+"%"}
+
+let dashLearner=learner;
+function renderDashLearners(){
+ let b=document.querySelector("#dashLearners");b.innerHTML="";
+ (LEARNERS.map(x=>x[0])).forEach(n=>{let x=document.createElement("button");x.className="profile"+(n===dashLearner?" active":"");x.textContent=n;x.onclick=()=>{dashLearner=n;renderDashLearners();renderDashboard(n)};b.appendChild(x)})
+}
+document.querySelector("#parentBtn").onclick=()=>{dashLearner=learner;document.querySelector("#parentDash").classList.remove("hidden");renderDashLearners();renderDashboard(dashLearner);document.querySelector("#parentDash").scrollIntoView({behavior:"smooth"})};
+document.querySelector("#closeDash").onclick=()=>document.querySelector("#parentDash").classList.add("hidden");
+
+document.querySelector("#restart").onclick=startQuest;
+document.querySelectorAll(".langbtn").forEach(b=>b.onclick=()=>{langMode=b.dataset.lang;localStorage.setItem("lq-lang",langMode);document.querySelectorAll(".langbtn").forEach(x=>x.classList.toggle("active",x.dataset.lang===langMode));renderSubjects();renderUnits();renderQ()});
+document.querySelector("#stars").textContent=stars;document.querySelector("#clears").textContent=clears;document.querySelector("#learnerName").textContent=learner;document.querySelector("#welcome").textContent=`${learner}，今天继续升级吧！`;renderProfiles();renderSubjects();selectSubject("数学");
+</script></body></html>
