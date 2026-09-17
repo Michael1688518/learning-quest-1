@@ -1,10 +1,10 @@
-# Learning Quest v3.0.1
+# Learning Quest v3.1
 
 GitHub Pages flat-root build. Upload all six files to the repository root.
 
 Files: `index.html`, `harry_index.html`, `app.js`, `styles.css`, `content.js`, `README.md`.
 
-## v3.0.1
+## v3.1
 - Kids area: consistent CN / EN / DE trilingual UI, centers, questions, answers, feedback, explanations, RAZ and parent log.
 - Adult English: Chinese + English only.
 - Adult learning path: original Level 1–5 curriculum structure inspired by the public AMEP adult-English competency framework.
