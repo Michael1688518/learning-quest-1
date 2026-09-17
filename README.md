@@ -1,19 +1,15 @@
-# Learning Quest v3.1 — GitHub Pages upload version
+# Learning Quest v3.0.1
 
-CN / EN / DE trilingual responsive learning prototype for Kevin, Camilla, Daniel and Harry. Upload all six files in this folder to the repository root.
+GitHub Pages flat-root build. Upload all six files to the repository root.
 
-## Files
-`index.html`, `harry_index.html`, `app.js`, `styles.css`, `content.js`, `README.md`
+Files: `index.html`, `harry_index.html`, `app.js`, `styles.css`, `content.js`, `README.md`.
 
-## Device behavior
-Learning records are saved offline in browser `localStorage`, separated by learner. The UI is responsive for phones and computers.
+## v3.0.1
+- Kids area: consistent CN / EN / DE trilingual UI, centers, questions, answers, feedback, explanations, RAZ and parent log.
+- Adult English: Chinese + English only.
+- Adult learning path: original Level 1–5 curriculum structure inspired by the public AMEP adult-English competency framework.
+- Daily Speaking: high-frequency real-life scenarios including greetings, clarification/survival English, cafe, restaurant, shopping/returns, directions/transport, doctor, pharmacy, school, phone calls, work and social invitations.
+- Speaking practice: browser speech synthesis, optional browser speech recognition, role-play randomisation and local mastery tracking.
+- Local progress is stored only in the browser via localStorage.
 
-## Cross-device cloud sync
-v3.1 includes the sync UI and a safe cloud-sync architecture, but **does not embed credentials or silently create a backend**. To actually share records between phone and computer, create a Supabase project, use only its public anon key in the browser, enable authentication, create a `learning_records` table, and enforce Row Level Security so each signed-in parent can access only their own rows. Never put the service-role/admin key in GitHub Pages.
-
-Suggested table columns: `id uuid primary key`, `user_id uuid`, `learner text`, `payload jsonb`, `updated_at timestamptz`. RLS should restrict rows with `auth.uid() = user_id`.
-
-Until backend setup is completed, offline/local learning works normally but different devices do not synchronize.
-
-## Validation
-The release build is checked for JavaScript syntax, local HTML dependencies, required file presence, responsive viewport/media rules, and ZIP extraction integrity.
+No AMEP lesson text, audio, images or complete copyrighted teaching materials are copied into this project.
